@@ -1,0 +1,79 @@
+﻿@page "/OpretVagt"
+@using Bambus.Shared;
+@inject HttpClient Http;
+
+<PageTitle>Tilføj Vagter</PageTitle>
+
+<h1>TILFØJ VAGTER</h1>
+
+<!-- Formular til at tilføje en booking -->
+<EditForm Model="vagt" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <!-- Dropdown-menu til at vælge et Shelter -->
+    <div>
+        <label for="vagts" class="bold-label"> Vagt :</label>
+        <select @bind="vagt.Jobnavn" @bind:event="onchange" class="form-control">
+            <option value=""> ---- vælg vagt her ----- </option>
+            @if (jobs == null)
+            {
+                <p><em>Loading...</em></p>
+            }
+            else
+            {
+                @foreach (var job in jobs)
+                {
+                    <option value="@job.Jobnavn">@job.Jobnavn</option>
+                }
+            }
+        </select>
+    </div>
+    <!-- Input-felter til at indtaste navn, email, start- og slutdato -->
+    <div class="col-md-12 mb-6">
+        <label for="Beskrivelse">Beskrivelse</label>
+        <InputText id="Beskrivelse" @bind-Value="vagt.Description" class="form-control" style="height: 150px;" required />
+    </div>
+    <div class="col-md-6 mb-3">
+        <label for="StartDateTime">Start DateTime</label>
+        <input type="datetime-local" id="StartDateTime" @bind="vagt.Startdate" class="form-control" required />
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label for="EndDateTime">End DateTime</label>
+        <input type="datetime-local" id="EndDateTime" @bind="vagt.Enddate" class="form-control" required />
+    </div>
+
+
+    <div class="col-12 mb-3">
+        <button type="submit" class="btn btn-primary">Add</button>
+    </div>
+</EditForm>
+
+
+@code {
+    Vagt vagt = new();  // Opretter en ny instans af Booking-modelen
+
+    // Metode der kaldes når formularen submitter
+    public async Task HandleValidSubmit()
+    {
+        await Http.PostAsJsonAsync<Vagt>("api/Vagt", vagt); // Sender en POST-anmodning til API'en for at tilføje en booking
+
+        vagt = new(); // Nulstiller felterne i formularen efter succesfuld tilføjelse
+    }
+
+    private List<Job> jobs = new List<Job>();
+
+    // Metode der kaldes når komponenten initialiseres
+    protected override async Task OnInitializedAsync()
+    {
+        jobs = await Http.GetFromJsonAsync<List<Job>>("api/jobs");  // Henter Shelterne fra API'en
+    }
+
+    // Metode der kaldes når der vælges et Shelter i dropdown-menuen
+    private void SelectedJob(ChangeEventArgs args)
+    {
+        string? SelectedJob = args.Value?.ToString();
+        // Her kan du udføre handlinger med det valgte Shelter
+    }
+}

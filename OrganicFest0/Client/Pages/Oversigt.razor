@@ -1,0 +1,86 @@
+﻿@page "/Oversigt"
+@using Bambus.Shared
+@inject HttpClient Http;
+
+<PageTitle>Liste af Vagter</PageTitle>
+
+<h1>Oversigt over Vagter</h1>
+
+@if (JobList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+
+    <table class="table">
+
+        <tbody>
+            @foreach (var job in JobList)
+            {
+                <tr class="JobRow">
+                    <td>
+                        <h2>@job.Jobnavn </h2>
+
+                    </td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => ShowJob(job)">Vis</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <ModalDialog @ref="@modalRef" Title="Frivillige Liste">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Navn</th>
+                    <th>Email</th>
+                    <th>TelefonNr</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var frivllig in SelectedFrivillige)
+                {
+                    <tr class="bookingRow">
+                        <th>@frivllig.FID</th>
+                        <th>@frivllig.Name</th>
+                        <th>@frivllig.Email</th>
+                        <th>@frivllig.Telefonnummer</th>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </ModalDialog>
+
+}
+
+@code {
+    private List<Job> JobList = new List<Job>();
+    private List<Vagt> VagtList = new List<Vagt>();
+    private List<Frivillig> SelectedFrivillige = new List<Frivillig>();
+    <!-- Opretter en liste af Booking-objekter til den valgte shelter -->
+    private Job SelectedJob;
+    private ModalDialog modalRef { get; set; }
+    <!-- Opretter en reference til modal-dialogen -->
+    protected override async Task OnInitializedAsync()
+    {
+        JobList = await Http.GetFromJsonAsync<List<Job>>("api/jobs");
+        <!-- Henter en liste af shelters fra API'en -->
+    }
+
+    private async void ShowJob(Job job)
+    {
+        SelectedJob = job;
+        <!-- Gemmer den valgte shelter -->
+        var t = await Http.GetFromJsonAsync<List<Frivillig>>($"api/Frivillig");
+        <!-- Henter en liste af bookings fra API'en -->
+        SelectedFrivillige = t.Where(b => b.FID.Equals(job.FID)).ToList();
+        <!-- Filtrer bookings for den valgte shelter -->
+        modalRef.Open();
+        <!-- Åbner modal-dialogen for at vise bookings -->
+    }
+}
