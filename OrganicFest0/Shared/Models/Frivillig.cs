@@ -12,11 +12,15 @@ namespace Bambus.Shared
         [BsonElement("FID")]
         public int FID { get; set; }
 
+        public string Password { get; set; } = "";
+
+        public bool IsCoordinator { get; set; } = false;
+
         public string Name { get; set; } = string.Empty;
 
         public string Email { get; set; } = string.Empty;
 
-        public string Telefonnummer { get; set; } = string.Empty;
+        public int Telefonnummer { get; set; }
 
         public string Rolle { get; set; } = string.Empty;
 

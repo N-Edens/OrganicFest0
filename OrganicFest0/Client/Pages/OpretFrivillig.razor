@@ -1,0 +1,46 @@
+﻿@page "/OpretFrivillig"
+@using Bambus.Shared;
+@inject HttpClient Http;
+
+<PageTitle>Tilføj Frivillige</PageTitle>
+
+<h1>TILFØJ FRIVILLIGE</h1>
+
+<!-- Formular til at tilføje en booking -->
+<EditForm Model="frivillig" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <!-- Input-felter til at indtaste navn, email, start- og slutdato -->
+    <div class="col-md-12 mb-6">
+        <label for="Navn">Navn</label>
+        <InputText id="Navn" @bind-Value="frivillig.Name" class="form-control" required />
+    </div>
+    <div class="col-md-12 mb-6">
+        <label for="Email">Email</label>
+        <InputText id="Email" @bind-Value="frivillig.Email" class="form-control" required />
+    </div>
+    <div class="col-md-12 mb-6">
+        <label for="TelefonNummer">Telefon Nummer</label>
+        <InputNumber id="TelefonNummer" @bind-Value="frivillig.Telefonnummer" class="form-control" required />
+    </div>
+
+
+    <div class="col-12 mb-3">
+        <button type="submit" class="btn btn-primary">Add</button>
+    </div>
+</EditForm>
+
+
+@code {
+    Frivillig frivillig = new();  // Opretter en ny instans af Booking-modelen
+
+    // Metode der kaldes når formularen submitter
+    public async Task HandleValidSubmit()
+    {
+        await Http.PostAsJsonAsync<Frivillig>("api/Frivillig", frivillig); // Sender en POST-anmodning til API'en for at tilføje en booking
+
+        frivillig = new(); // Nulstiller felterne i formularen efter succesfuld tilføjelse
+    }
+
+}

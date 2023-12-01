@@ -1,36 +1,39 @@
-﻿using System.Text.Json;
-using mini.Repositories;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Bambus.Server.Repositories;
 using Bambus.Shared;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using Bambus.Server.Repositories;
-using MongoDB.Driver.Core.Configuration;
-using System.Collections;
 
-namespace mini.Repositories;
+// Denne klasse håndterer interaktion med MongoDB for bookingdata
+public class FrivilligRepository : Ifrivillig
+{
+    private readonly IMongoCollection<Frivillig> _frivillig;  // Kollektion til interaktion med MongoDB for bookingdata
 
-public class FrivilligSQL : Ifrivillig
-
-{   // Strengvariabler, der indeholder forbindelsesoplysninger til MongoDB-databasen
-    private const string connectionString =
-        @"mongodb+srv://mathiashvid:Boost1234@organic.rv52jkh.mongodb.net/";
-    private const string databaseName = "OrganicFestival";
-    private const string collectionName = "Frivillig";
-
-    private IMongoCollection<Frivillig> collection; // MongoDB-samling til Shelter-oplysninger
-
-    // Konstruktøren opretter forbindelse til MongoDB-databasen og dens samlinger
-    public FrivilligSQL()
+    // Konstruktør: Etablere forbindelse til MongoDB og specificerer den kollektion, der skal bruges
+    public FrivilligRepository()
     {
-        var client = new MongoClient(connectionString); // Opretter en klient til MongoDB-serveren
-        var database = client.GetDatabase(databaseName);  // Får adgang til den ønskede database
-        collection = database.GetCollection<Frivillig>(collectionName); // Får adgang til Shelter-samlingen
+        MongoClient client = new MongoClient(
+            @"mongodb+srv://mathiashvid:Boost1234@organic.rv52jkh.mongodb.net/");
+        IMongoDatabase database = client.GetDatabase("OrganicFestival");
+        _frivillig = database.GetCollection<Frivillig>("Frivillige");
     }
 
-    // Metode til at hente alle Shelters fra MongoDB og returnere dem som en liste
-    public List<Frivillig> GetFrivillig()
+    public List<Frivillig> GetFrivilligs()
     {
-        return collection.Find(new BsonDocument()).ToList();  // Finder og returnerer alle Shelters
+        return _frivillig.Find(new BsonDocument()).ToList();
     }
 
+    // Metode til at tilføje en booking til MongoDB asynkront
+    public async Task AddFrivillig(Frivillig frivillig)
+    {
+        await _frivillig.InsertOneAsync(frivillig);
+    }
+
+    // Metode til at tilføje en booking til MongoDB asynkront
+    public Task<IEnumerable<Frivillig>> GetAllFrivillige()
+    {
+        return new Task<IEnumerable<Frivillig>>(() => GetFrivilligs());
+    }
 }

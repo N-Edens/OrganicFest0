@@ -18,7 +18,7 @@ namespace client
             builder.Services.AddRazorPages();
 
             builder.Services.AddSingleton<IVagt, VagtRepository>();
-            builder.Services.AddSingleton<Ifrivillig, FrivilligSQL>();
+            builder.Services.AddSingleton<Ifrivillig, FrivilligRepository>();
             builder.Services.AddSingleton<IJob, JobRepository>();
             var app = builder.Build();
 
@@ -35,7 +35,6 @@ namespace client
             }
 
             app.UseHttpsRedirection();
-
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
 
