@@ -29,9 +29,15 @@
   <ItemGroup>
     <None Remove="Pages\" />
     <None Remove="Services\" />
+    <None Remove="Services\VagtService\" />
+    <None Remove="Services\FrivilligService\" />
+    <None Remove="Services\JobService\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Pages\" />
     <Folder Include="Services\" />
+    <Folder Include="Services\VagtService\" />
+    <Folder Include="Services\FrivilligService\" />
+    <Folder Include="Services\JobService\" />
   </ItemGroup>
 </Project>

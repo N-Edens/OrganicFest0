@@ -1,6 +1,8 @@
 ﻿@page "/OpretVagt"
 @using OrganicFest.Shared
-@inject HttpClient Http;
+@using OrganicFest0.Client.Services
+@inject IVagtService VagtService;
+@inject IJobService JobService;
 
 <PageTitle>Tilføj Vagter</PageTitle>
 
@@ -37,12 +39,12 @@
     </div>
     <div class="col-md-6 mb-3">
         <label for="StartDateTime">Start DateTime</label>
-        <InputDate id="StartDateTime" @bind-Value="vagt.Startdate" class="form-control" required />
+        <input type="datetime-local" id="StartDateTime" @bind="vagt.Startdate" class="form-control" required />
     </div>
 
     <div class="col-md-6 mb-3">
         <label for="EndDateTime">End DateTime</label>
-        <InputDate id="EndDateTime" @bind-Value="vagt.Enddate" class="form-control" required />
+        <input type="datetime-local" id="EndDateTime" @bind="vagt.Enddate" class="form-control" required />
     </div>
 
     <div class="col-12 mb-3">
@@ -59,18 +61,10 @@
         try
         {
             // Sender en POST-anmodning til API'en for at tilføje en vagt
-            var response = await Http.PostAsJsonAsync("api/vagt/add", vagt);
+            await VagtService.AddVagt(vagt);
 
-            if (response.IsSuccessStatusCode)
-            {
-                // Nulstil felterne i formularen efter succesfuld tilføjelse
-                vagt = new Vagt();
-            }
-            else
-            {
-                // Håndter fejl, f.eks. vis en besked til brugeren
-                Console.WriteLine($"Fejl: {response.StatusCode}");
-            }
+            // Nulstil felterne i formularen efter succesfuld tilføjelse
+            vagt = new Vagt();
         }
         catch (Exception ex)
         {
@@ -84,6 +78,6 @@
     // Metode der kaldes når komponenten initialiseres
     protected override async Task OnInitializedAsync()
     {
-        jobs = await Http.GetFromJsonAsync<List<Job>>("api/job/getall");  // Henter jobs fra API'en
+        jobs = (await JobService.GetAllJobs()).ToList();  // Henter jobs fra JobService
     }
 }

@@ -30,7 +30,7 @@
         </div>
     }
 
-    <p>Er du ikke oprettet endnu? <NavLink href="/OpretFrivillig">Klik her</NavLink></p>
+    <p>Not registered yet? <NavLink href="/OpretFrivillig">Click here</NavLink></p>
 </EditForm>
 
 @code {
@@ -39,7 +39,7 @@
 
     private async Task HandleValidSubmit()
     {
-        var response = await Http.PostAsJsonAsync<Frivillig>("api/Frivillig/login", frivillig);
+        var response = await Http.PostAsJsonAsync<Frivillig>("api/frivillig/login", frivillig);
 
         if (response.IsSuccessStatusCode)
         {
@@ -47,8 +47,8 @@
         }
         else
         {
-            // Login fejlede, vis fejlmeddelelse
-            errorMessage = "Forkert e-mail eller adgangskode.";
+            // Login failed, show error message
+            errorMessage = "Incorrect email or password.";
         }
     }
 }

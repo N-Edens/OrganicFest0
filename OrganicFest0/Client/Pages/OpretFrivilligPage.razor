@@ -1,5 +1,6 @@
 ﻿@page "/OpretFrivillig"
-@inject HttpClient Http
+@using OrganicFest0.Client.Services
+@inject IFrivilligService FrivilligService
 @using OrganicFest.Shared
 
 <PageTitle>Tilføj Frivillige</PageTitle>
@@ -42,18 +43,10 @@
         try
         {
             // Sender en POST-anmodning til API'en for at tilføje en frivillig
-            var response = await Http.PostAsJsonAsync("api/frivillig/add", frivillig);
+            await FrivilligService.AddFrivillig(frivillig);
 
-            if (response.IsSuccessStatusCode)
-            {
-                // Nulstil felterne i formularen efter succesfuld tilføjelse
-                frivillig = new Frivillig();
-            }
-            else
-            {
-                // Håndter fejl, f.eks. vis en besked til brugeren
-                Console.WriteLine($"Fejl: {response.StatusCode}");
-            }
+            // Nulstil felterne i formularen efter succesfuld tilføjelse
+            frivillig = new Frivillig();
         }
         catch (Exception ex)
         {

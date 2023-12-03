@@ -1,6 +1,7 @@
 ﻿@page "/Frivillig"
+@using OrganicFest0.Client.Services
 @using OrganicFest.Shared
-@inject HttpClient Http;
+@inject IVagtService VagtService
 
 <div class="container-fluid">
     <div class="row">
@@ -72,7 +73,8 @@
     {
         try
         {
-            vagtList = await Http.GetFromJsonAsync<List<Vagt>>("api/vagt/getall");
+            // Use the VagtService to get all vagts
+            vagtList = (await VagtService.GetAllVagts()).ToList();
         }
         catch (Exception ex)
         {
@@ -81,7 +83,7 @@
     }
 
     // Metode til at håndtere sletning af en vagt
-    private void DeleteVagt(Vagt vagt)
+    private async Task DeleteVagt(Vagt vagt)
     {
         // Fjern den valgte vagt fra listen
         vagtList.Remove(vagt);
@@ -90,7 +92,7 @@
     }
 
     // Metode til at håndtere tilføjelse af en vagt til højre boks
-    private void AddVagtToRightBox(Vagt vagt)
+    private async Task AddVagtToRightBox(Vagt vagt)
     {
         // Tilføj den valgte vagt til højre boks
         mineVagter.Add(vagt);
@@ -99,7 +101,7 @@
     }
 
     // Metode til at håndtere fjernelse af en vagt fra højre boks
-    private void FjernVagtFromRightBox(Vagt vagt)
+    private async Task FjernVagtFromRightBox(Vagt vagt)
     {
         // Tilføj den valgte vagt til venstre boks
         vagtList.Add(vagt);

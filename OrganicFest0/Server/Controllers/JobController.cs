@@ -22,7 +22,6 @@ namespace OrganicFest.Server.Controllers
         }
 
         [HttpGet]
-        [Route("getall")]
         public IEnumerable<Job> GetAllJobs()
         {
             return jRepo.GetallJobs();

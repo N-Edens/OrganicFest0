@@ -20,14 +20,12 @@ namespace OrganicFest.Server.Controllers
         }
 
         [HttpGet]
-        [Route("getall")]
         public IEnumerable<Frivillig> GetAllFrivillige()
         {
             return fRepo.GetAllFrivillige();
         }
 
         [HttpPost]
-        [Route("add")]
         public void AddFrivillig(Frivillig frivillig)
         {
             fRepo.AddFrivillig(frivillig);
@@ -41,31 +39,34 @@ namespace OrganicFest.Server.Controllers
         }
 
         [HttpPut]
-        [Route("update")]
         public void UpdateFrivillig(Frivillig frivillig)
         {
             fRepo.UpdateFrivillig(frivillig);
         }
 
-        // Metode til at håndtere login
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] Frivillig frivillig)
+        [HttpPost]
+        [Route("login")]
+        public async Task<IActionResult> Login([FromBody] Frivillig loginFrivillig)
         {
-            // Hent frivillig baseret på e-mail
-            var existingFrivillig = await fRepo.GetFrivilligByEmail(frivillig.Email);
+            try
+            {
+                var existingFrivillig = await fRepo.GetFrivilligByEmail(loginFrivillig.Email);
 
-            // Check om frivillig eksisterer og adgangskoden matcher
-            if (existingFrivillig != null && existingFrivillig.Password == frivillig.Password)
-            {
-                // Login er vellykket
-                return Ok(existingFrivillig);
+                if (existingFrivillig != null && existingFrivillig.Password == loginFrivillig.Password)
+                {
+                    // Login successful
+                    return Ok(existingFrivillig);
+                }
+                else
+                {
+                    // Login failed
+                    return BadRequest("Incorrect email or password.");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                // Login mislykkedes
-                return BadRequest("Forkert e-mail eller adgangskode.");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-        // Her kan du tilføje yderligere metoder til at opdatere, slette osv., baseret på din repository implementering
     }
 }
