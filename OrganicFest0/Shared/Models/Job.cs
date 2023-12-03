@@ -2,7 +2,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace Bambus.Shared
+namespace OrganicFest.Shared
 {
     public class Job
     {
@@ -13,7 +13,7 @@ namespace Bambus.Shared
         public string Jobnavn { get; set; } = "";
 
         [BsonElement("FID")]
-        public int FID;
+        public int FID { get; set; }
     }
 }
 

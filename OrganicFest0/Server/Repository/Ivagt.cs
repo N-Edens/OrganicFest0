@@ -1,12 +1,13 @@
 ﻿using System;
-using Bambus.Shared;
+using OrganicFest.Shared;
 
-namespace Bambus.Server.Repositories
+namespace OrganicFest.Server.Repository
 {
     public interface IVagt
     {
-        Task<IEnumerable<Vagt>> GetAllVagts();
-        Task AddVagt(Vagt vagt);
-        List<Vagt> GetVagts();
+        void AddVagt(Vagt vagt);
+        void DeleteVagt(int VID);
+        Vagt[] GetAllVagts();
+        void UpdateVagt(Vagt vagt);
     }
 }

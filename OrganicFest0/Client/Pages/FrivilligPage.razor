@@ -1,5 +1,5 @@
 ﻿@page "/Frivillig"
-@using Bambus.Shared
+@using OrganicFest.Shared
 @inject HttpClient Http;
 
 <div class="container-fluid">
@@ -9,7 +9,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <h4>Vagter</h4>
+                    <h4>Alle Vagter</h4>
 
                     @if (vagtList == null)
                     {
@@ -24,11 +24,12 @@
                         @foreach (var vagt in vagtList)
                         {
                             <div class="mb-3">
-                                <strong>VID:</strong> @vagt.VID.<br />
-                                <strong>Job Navn:</strong> @vagt.Jobnavn<br />
-                                <strong>Beskrivelse:</strong> @vagt.Description<br />
-                                <button class="btn btn-sm btn-success" @onclick="() => AddFriviligToRightBox(vagt)">Add</button>
-                                <button class="btn btn-sm btn-danger" @onclick="() => DeleteFrivilig(vagt)">Delete</button>
+                                <strong>VagtID:</strong> @vagt.VID<br />
+                                <strong>Jobnavn:</strong> @vagt.Jobnavn<br />
+                                <strong>StartDate:</strong> @vagt.Startdate<br />
+                                <strong>EndDate:</strong> @vagt.Enddate<br />
+                                <button class="btn btn-sm btn-success" @onclick="() => AddVagtToRightBox(vagt)">Tilføj</button>
+                                <button class="btn btn-sm btn-danger" @onclick="() => DeleteVagt(vagt)">Slet</button>
                             </div>
                             <hr />
                         }
@@ -41,17 +42,18 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <h4>Mine vagter</h4>
-                    <!-- Display volunteers added to the right box -->
+                    <h4>Mine Vagter</h4>
+                    <!-- Display vagter added to the right box -->
                     <ul>
-                        @foreach (var vagt in MineVagter)
+                        @foreach (var vagt in mineVagter)
                         {
                             <div class="mb-3">
-                                <strong>VID:</strong> @vagt.VID<br />
-                                <strong>Job Navn:</strong> @vagt.Jobnavn<br />
-                                <strong>Beskrivelse:</strong> @vagt.Description<br />
-                                <button class="btn btn-sm btn-success" @onclick="() =>FjernFrivilligFromRight(vagt)">Fjern</button>
-                                <button class="btn btn-sm btn-danger" @onclick="() => DeleteFrivilig(vagt)">Delete</button>
+                                <strong>VagtID:</strong> @vagt.VID<br />
+                                <strong>Jobnavn:</strong> @vagt.Jobnavn<br />
+                                <strong>StartDate:</strong> @vagt.Startdate<br />
+                                <strong>EndDate:</strong> @vagt.Enddate<br />
+                                <button class="btn btn-sm btn-success" @onclick="() => FjernVagtFromRightBox(vagt)">Fjern</button>
+                                <button class="btn btn-sm btn-danger" @onclick="() => DeleteVagt(vagt)">Slet</button>
                             </div>
                             <hr />
                         }
@@ -64,43 +66,44 @@
 
 @code {
     private List<Vagt> vagtList = new List<Vagt>();
-    private List<Vagt> MineVagter = new List<Vagt>();
+    private List<Vagt> mineVagter = new List<Vagt>();
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            vagtList = await Http.GetFromJsonAsync<List<Vagt>>("api/Vagt");
+            vagtList = await Http.GetFromJsonAsync<List<Vagt>>("api/vagt/getall");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error: {ex.Message}");
+            Console.WriteLine($"Fejl: {ex.Message}");
         }
     }
 
-    // Metode til at håndtere sletning af en frivillig
-    private void DeleteFrivilig(Vagt vagt)
+    // Metode til at håndtere sletning af en vagt
+    private void DeleteVagt(Vagt vagt)
     {
-        // Fjern den valgte frivillig fra listen
+        // Fjern den valgte vagt fra listen
         vagtList.Remove(vagt);
 
-        MineVagter.Remove(vagt);
+        mineVagter.Remove(vagt);
     }
 
-    // Metode til at håndtere tilføjelse af en frivillig til højre boks
-    private void AddFriviligToRightBox(Vagt vagt)
+    // Metode til at håndtere tilføjelse af en vagt til højre boks
+    private void AddVagtToRightBox(Vagt vagt)
     {
-        // Tilføj den valgte frivillig til højre boks
-        MineVagter.Add(vagt);
+        // Tilføj den valgte vagt til højre boks
+        mineVagter.Add(vagt);
 
         vagtList.Remove(vagt);
     }
-    // Metode til at håndtere tilføjelse af en frivillig til højre boks
-    private void FjernFrivilligFromRight(Vagt vagt)
+
+    // Metode til at håndtere fjernelse af en vagt fra højre boks
+    private void FjernVagtFromRightBox(Vagt vagt)
     {
-        // Tilføj den valgte frivillig til højre boks
+        // Tilføj den valgte vagt til venstre boks
         vagtList.Add(vagt);
 
-        MineVagter.Remove(vagt);
+        mineVagter.Remove(vagt);
     }
 }

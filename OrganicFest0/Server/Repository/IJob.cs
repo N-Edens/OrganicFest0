@@ -1,11 +1,11 @@
-﻿using Bambus.Shared;
+﻿using OrganicFest.Shared;
 using System.Collections.Generic;
 
-namespace Bambus.Server.Repositories
+namespace OrganicFest.Server.Repository
 {
     // The IJob interface defines a contract for classes that will handle jobs
     public interface IJob
     {
-        List<Job> GetJobs(); // Method to retrieve a list of jobs
+        Job[] GetallJobs();
     }
 }

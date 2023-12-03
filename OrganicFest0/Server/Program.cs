@@ -1,7 +1,6 @@
-﻿using Bambus.Server.Repositories;
-
+﻿
+using OrganicFest.Server.Repository;
 using Microsoft.AspNetCore.ResponseCompression;
-using mini.Repositories;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace client
@@ -17,9 +16,9 @@ namespace client
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
 
-            builder.Services.AddSingleton<IVagt, VagtRepository>();
-            builder.Services.AddSingleton<Ifrivillig, FrivilligRepository>();
-            builder.Services.AddSingleton<IJob, JobRepository>();
+            builder.Services.AddSingleton<IVagt, VagtRepositoryMongoDB>();
+            builder.Services.AddSingleton<Ifrivillig, FrivilligRepositoryMongoDB>();
+            builder.Services.AddSingleton<IJob, JobRepositoryMongoDB>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

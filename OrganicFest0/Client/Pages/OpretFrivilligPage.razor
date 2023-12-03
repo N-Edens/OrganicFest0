@@ -1,0 +1,64 @@
+﻿@page "/OpretFrivillig"
+@inject HttpClient Http
+@using OrganicFest.Shared
+
+<PageTitle>Tilføj Frivillige</PageTitle>
+
+<h1>TILFØJ FRIVILLIGE</h1>
+
+<!-- Formular til at tilføje en frivillig -->
+<EditForm Model="frivillig" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <!-- Input-felter til at indtaste navn, email, telefonnummer, og password -->
+    <div class="col-md-12 mb-6">
+        <label for="Navn">Navn</label>
+        <InputText id="Navn" @bind-Value="frivillig.Name" class="form-control" required />
+    </div>
+    <div class="col-md-12 mb-6">
+        <label for="Email">Email</label>
+        <InputText id="Email" @bind-Value="frivillig.Email" class="form-control" required />
+    </div>
+    <div class="col-md-12 mb-6">
+        <label for="TelefonNummer">Telefon Nummer</label>
+        <InputNumber id="TelefonNummer" @bind-Value="frivillig.Telefonnummer" class="form-control" required />
+    </div>
+    <div class="col-md-12 mb-6">
+        <label for="Password">Password</label>
+        <InputText id="Password" @bind-Value="frivillig.Password" class="form-control" required />
+    </div>
+
+    <div class="col-12 mb-3">
+        <button type="submit" class="btn btn-primary">Tilføj</button>
+    </div>
+</EditForm>
+
+@code {
+    Frivillig frivillig = new Frivillig();
+
+    async Task HandleValidSubmit()
+    {
+        try
+        {
+            // Sender en POST-anmodning til API'en for at tilføje en frivillig
+            var response = await Http.PostAsJsonAsync("api/frivillig/add", frivillig);
+
+            if (response.IsSuccessStatusCode)
+            {
+                // Nulstil felterne i formularen efter succesfuld tilføjelse
+                frivillig = new Frivillig();
+            }
+            else
+            {
+                // Håndter fejl, f.eks. vis en besked til brugeren
+                Console.WriteLine($"Fejl: {response.StatusCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            // Håndter eventuelle undtagelser
+            Console.WriteLine($"Fejl: {ex.Message}");
+        }
+    }
+}

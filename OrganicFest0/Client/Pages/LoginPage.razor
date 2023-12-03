@@ -1,0 +1,54 @@
+﻿@page "/Login"
+@using OrganicFest.Shared
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h1>Login</h1>
+
+<EditForm Model="frivillig" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="Email">Email:</label>
+        <InputText id="Email" @bind-Value="frivillig.Email" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label for="Password">Password:</label>
+        <InputText id="Password" @bind-Value="frivillig.Password" type="password" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <button type="submit" class="btn btn-primary">Login</button>
+    </div>
+
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="alert alert-danger" role="alert">
+            @errorMessage
+        </div>
+    }
+
+    <p>Er du ikke oprettet endnu? <NavLink href="/OpretFrivillig">Klik her</NavLink></p>
+</EditForm>
+
+@code {
+    private Frivillig frivillig = new Frivillig();
+    private string errorMessage;
+
+    private async Task HandleValidSubmit()
+    {
+        var response = await Http.PostAsJsonAsync<Frivillig>("api/Frivillig/login", frivillig);
+
+        if (response.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo("/frivillig");
+        }
+        else
+        {
+            // Login fejlede, vis fejlmeddelelse
+            errorMessage = "Forkert e-mail eller adgangskode.";
+        }
+    }
+}

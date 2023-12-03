@@ -1,44 +1,51 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Bambus.Server.Repositories;
-using Bambus.Shared;
+using OrganicFest.Server.Repository;
+using OrganicFest.Shared;
 using static System.Net.Mime.MediaTypeNames;
 
-// Markerer denne klasse som en ApiController, hvilket betyder, at den håndterer HTTP-anmodninger
-[Route("api/vagt")]  // Angiver rutepræfikset for API-endepunkterne i denne controller
-public class VagtController : ControllerBase  // Arver funktionalitet fra ControllerBase, som er en del af ASP.NET Core
+namespace OrganicFest.Server.Controllers
 {
-    private readonly IVagt _repository; // Privat felt til at gemme en instans af IBookingRepository
-
-    // Konstruktør, der tager imod en IBookingRepository-implementering gennem dependency injection - Altså giver ansvaret videre
-    public VagtController(IVagt repository)
+    [ApiController]
+    [Route("api/vagt")]
+    public class VagtController : ControllerBase
     {
-        _repository = repository;   // Gemmer repository som et felt for brug i metoder
-    }
+        private IVagt vRepo;
 
-    // Metode til at håndtere HTTP GET-anmodninger til api/bookings
-    [HttpGet]
-    public IEnumerable<Vagt> GetVagts()
-    {
-        return _repository.GetVagts();  // Kalder GetBookings metoden på _repository for at hente alle bookinger
-    }
-
-
-    // Metode til at håndtere HTTP POST-anmodninger til api/bookings med en Booking som krop (FromBody)
-    [HttpPost]
-    public async Task<IActionResult> OpretBooking([FromBody] Vagt vagt)
-    {
-        try
+        public VagtController(IVagt repo)
         {
-            await _repository.AddVagt(vagt);  // Kalder AddBooking-metoden på _repository for at oprette en ny booking
-            return Ok();  // Returnerer et HTTP 200 OK-svar ved succes
+            vRepo = repo;
         }
-        catch (System.Exception ex)
-        {
-            return StatusCode(500, $"En fejl opstod ved oprettelse af booking. Fejl: {ex.Message}");  // Returnerer en fejlmeddelelse og HTTP 500-statuskode ved fejl
-        }
-    }
 
-    // Her kan du tilføje yderligere metoder til at opdatere, slette osv., baseret på din repository implementering
+        [HttpGet]
+        [Route("getall")]
+        public IEnumerable<Vagt> GetAllVagt()
+        {
+            return vRepo.GetAllVagts();
+        }
+
+        [HttpPost]
+        [Route("add")]
+        public void AddVagt(Vagt vagt)
+        {
+            vRepo.AddVagt(vagt);
+        }
+
+        [HttpDelete]
+        [Route("delete/{VID:int}")]
+        public void DeleteVagt(int VID)
+        {
+            vRepo.DeleteVagt(VID);
+        }
+
+        [HttpPut]
+        [Route("update")]
+        public void UpdateVagt(Vagt vagt)
+        {
+            vRepo.UpdateVagt(vagt);
+        }
+
+
+    }
 }

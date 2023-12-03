@@ -5,29 +5,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Bambus.Server.Repositories;
-using Bambus.Shared;
+using OrganicFest.Server.Repository;
+using OrganicFest.Shared;
 
-namespace mini.Server.Controllers
+namespace OrganicFest.Server.Controllers
 {
-    [Route("api/jobs")]  // Angiver rutepræfikset for API-endepunkterne i denne controller
-    [ApiController]  // Markerer denne klasse som en ApiController, hvilket betyder, at den håndterer HTTP-anmodninger
+    [ApiController]
+    [Route("api/job")]
     public class JobController : ControllerBase
     {
+        private IJob jRepo;
 
-        public readonly IJob _jobRepository;  // Privat felt til at gemme en instans af IShelter
-
-        // Konstruktør, der tager imod en IShelter-implementering gennem dependency injection - Gø
-        public JobController(IJob jobRepository)
+        public JobController(IJob repo)
         {
-            _jobRepository = jobRepository; // Gemmer shelterRepository som et felt for brug i metoder
+            jRepo = repo;
         }
 
-        // Metode til at håndtere HTTP GET-anmodninger til api/shelter
         [HttpGet]
-        public List<Job> GetJobs()
+        [Route("getall")]
+        public IEnumerable<Job> GetAllJobs()
         {
-            return _jobRepository.GetJobs();  // Kalder GetShelters metoden på _shelterRepository for at hente alle Shelters
+            return jRepo.GetallJobs();
         }
+
     }
 }

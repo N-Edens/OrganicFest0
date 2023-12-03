@@ -1,12 +1,15 @@
-﻿using Bambus.Shared;
+﻿using OrganicFest.Shared;
 using System.Collections.Generic;
 
-namespace Bambus.Server.Repositories
+namespace OrganicFest.Server.Repository
 {
     public interface Ifrivillig
     {
-        Task<IEnumerable<Frivillig>> GetAllFrivillige();
-        Task AddFrivillig(Frivillig frivillig);
-        List<Frivillig> GetFrivilligs();
+        void AddFrivillig(Frivillig frivillig);
+        void DeleteFrivillig(int FID);
+        Frivillig[] GetAllFrivillige();
+        void UpdateFrivillig(Frivillig frivillig);
+        Task<Frivillig> GetFrivilligByEmail(string email);
+
     }
 }
