@@ -2,8 +2,16 @@
 @using OrganicFest0.Client.Services
 @using OrganicFest.Shared
 @inject IVagtService VagtService
+@inject Blazored.LocalStorage.ILocalStorageService localStore
+@inject NavigationManager NavManager
 
 <div class="container-fluid">
+    <h1>Welcome, @frivillig?.Name FID: @frivillig?.FID</h1>
+
+    <div class="mb-3">
+        <button class="btn btn-warning" @onclick="HandleLogout">Log out</button>
+    </div>
+
     <div class="row">
 
         <!-- Left Box -->
@@ -50,6 +58,7 @@
                         {
                             <div class="mb-3">
                                 <strong>VagtID:</strong> @vagt.VID<br />
+                                <strong>FrivilligID:</strong> @vagt.FID<br />
                                 <strong>Jobnavn:</strong> @vagt.Jobnavn<br />
                                 <strong>StartDate:</strong> @vagt.Startdate<br />
                                 <strong>EndDate:</strong> @vagt.Enddate<br />
@@ -68,17 +77,25 @@
 @code {
     private List<Vagt> vagtList = new List<Vagt>();
     private List<Vagt> mineVagter = new List<Vagt>();
+    private Frivillig frivillig;
 
     protected override async Task OnInitializedAsync()
     {
-        try
+        frivillig = await localStore.GetItemAsync<Frivillig>("loggedInUser");
+
+        if (frivillig == null)
+            NavManager.NavigateTo("/login");
+        else
         {
-            // Use the VagtService to get all vagts
-            vagtList = (await VagtService.GetAllVagts()).ToList();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Fejl: {ex.Message}");
+            try
+            {
+                // Brug VagtService til at få alle vagter
+                vagtList = (await VagtService.GetAllVagts()).ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fejl: {ex.Message}");
+            }
         }
     }
 
@@ -87,7 +104,6 @@
     {
         // Fjern den valgte vagt fra listen
         vagtList.Remove(vagt);
-
         mineVagter.Remove(vagt);
     }
 
@@ -96,7 +112,6 @@
     {
         // Tilføj den valgte vagt til højre boks
         mineVagter.Add(vagt);
-
         vagtList.Remove(vagt);
     }
 
@@ -105,7 +120,13 @@
     {
         // Tilføj den valgte vagt til venstre boks
         vagtList.Add(vagt);
-
         mineVagter.Remove(vagt);
+    }
+
+    // Metode til at håndtere logud
+    private void HandleLogout()
+    {
+        localStore.RemoveItemAsync("loggedInUser");
+        NavManager.NavigateTo("/login");
     }
 }

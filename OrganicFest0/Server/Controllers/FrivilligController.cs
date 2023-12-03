@@ -44,6 +44,8 @@ namespace OrganicFest.Server.Controllers
             fRepo.UpdateFrivillig(frivillig);
         }
 
+        // ... (din eksisterende kode)
+
         [HttpPost]
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] Frivillig loginFrivillig)
@@ -68,5 +70,6 @@ namespace OrganicFest.Server.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
     }
 }

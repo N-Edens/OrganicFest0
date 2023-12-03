@@ -1,7 +1,8 @@
 ﻿@page "/Login"
 @using OrganicFest.Shared
+@inject Blazored.LocalStorage.ILocalStorageService localStore
 @inject HttpClient Http
-@inject NavigationManager NavigationManager
+@inject NavigationManager NavManager
 
 <h1>Login</h1>
 
@@ -39,16 +40,24 @@
 
     private async Task HandleValidSubmit()
     {
-        var response = await Http.PostAsJsonAsync<Frivillig>("api/frivillig/login", frivillig);
+        try
+        {
+            var response = await Http.PostAsJsonAsync<Frivillig>("api/frivillig/login", frivillig);
 
-        if (response.IsSuccessStatusCode)
-        {
-            NavigationManager.NavigateTo("/frivillig");
+            if (response.IsSuccessStatusCode)
+            {
+                var loggedInUser = await response.Content.ReadFromJsonAsync<Frivillig>();
+                await localStore.SetItemAsync("loggedInUser", loggedInUser);
+                NavManager.NavigateTo("/Frivillig");
+            }
+            else
+            {
+                errorMessage = "Incorrect email or password.";
+            }
         }
-        else
+        catch (Exception ex)
         {
-            // Login failed, show error message
-            errorMessage = "Incorrect email or password.";
+            Console.WriteLine($"Fejl: {ex.Message}");
         }
     }
 }

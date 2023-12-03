@@ -1,19 +1,19 @@
 ﻿@page "/OpretVagt"
 @using OrganicFest.Shared
 @using OrganicFest0.Client.Services
-@inject IVagtService VagtService;
-@inject IJobService JobService;
+@inject Blazored.LocalStorage.ILocalStorageService localStore
+@inject NavigationManager NavManager
+@inject IVagtService VagtService
+@inject IJobService JobService
 
 <PageTitle>Tilføj Vagter</PageTitle>
 
 <h1>TILFØJ VAGTER</h1>
 
-<!-- Formular til at tilføje en vagt -->
-<EditForm Model="vagt" OnValidSubmit="@HandleValidSubmit">
+<EditForm Model="vagt" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
-    <!-- Dropdown-menu til at vælge et job -->
     <div>
         <label for="Jobnavn" class="bold-label"> Job :</label>
         <select @bind="vagt.Jobnavn" class="form-control">
@@ -32,7 +32,6 @@
         </select>
     </div>
 
-    <!-- Input-felter til at indtaste beskrivelse, start- og slutdato -->
     <div class="col-md-12 mb-6">
         <label for="Beskrivelse">Beskrivelse</label>
         <InputText id="Beskrivelse" @bind-Value="vagt.Description" class="form-control" style="height: 150px;" required />
@@ -53,31 +52,31 @@
 </EditForm>
 
 @code {
-    Vagt vagt = new Vagt();
+    private string busyDisplayStyle = "none";
+    private Vagt vagt = new Vagt();
+    private List<Job> jobs = new List<Job>();
 
-    // Metode der kaldes når formularen submitter
-    public async Task HandleValidSubmit()
+    protected override async Task OnInitializedAsync()
+    {
+        var currentUser = await localStore.GetItemAsync<Frivillig>("loggedInUser");
+        if (currentUser == null)
+            NavManager.NavigateTo("/login");
+
+        busyDisplayStyle = "block";
+        jobs = (await JobService.GetAllJobs()).ToList();
+        busyDisplayStyle = "none";
+    }
+
+    private async Task HandleValidSubmit()
     {
         try
         {
-            // Sender en POST-anmodning til API'en for at tilføje en vagt
             await VagtService.AddVagt(vagt);
-
-            // Nulstil felterne i formularen efter succesfuld tilføjelse
             vagt = new Vagt();
         }
         catch (Exception ex)
         {
-            // Håndter eventuelle undtagelser
             Console.WriteLine($"Fejl: {ex.Message}");
         }
-    }
-
-    private List<Job> jobs = new List<Job>();
-
-    // Metode der kaldes når komponenten initialiseres
-    protected override async Task OnInitializedAsync()
-    {
-        jobs = (await JobService.GetAllJobs()).ToList();  // Henter jobs fra JobService
     }
 }
