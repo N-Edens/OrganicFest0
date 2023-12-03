@@ -29,8 +29,10 @@
                                 <strong>Jobnavn:</strong> @vagt.Jobnavn<br />
                                 <strong>StartDate:</strong> @vagt.Startdate<br />
                                 <strong>EndDate:</strong> @vagt.Enddate<br />
+                                <strong>Priority:</strong> @vagt.Priority<br />  
                                 <button class="btn btn-sm btn-success" @onclick="() => AddVagtToRightBox(vagt)">Tilføj</button>
                                 <button class="btn btn-sm btn-danger" @onclick="() => DeleteVagt(vagt)">Slet</button>
+                                <button class="btn btn-sm btn-success">Prioter vagt</button>
                             </div>
                             <hr />
                         }
@@ -53,6 +55,7 @@
                                 <strong>Jobnavn:</strong> @vagt.Jobnavn<br />
                                 <strong>StartDate:</strong> @vagt.Startdate<br />
                                 <strong>EndDate:</strong> @vagt.Enddate<br />
+                                <strong>Priority:</strong> @vagt.Priority<br />
                                 <button class="btn btn-sm btn-success" @onclick="() => FjernVagtFromRightBox(vagt)">Fjern</button>
                                 <button class="btn btn-sm btn-danger" @onclick="() => DeleteVagt(vagt)">Slet</button>
                             </div>

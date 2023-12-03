@@ -22,6 +22,8 @@ namespace OrganicFest.Shared
         public DateTime? Startdate { get; set; } = null;
 
         public DateTime? Enddate { get; set; } = null;
+        
+        public bool Priority { get; set; } = false;
 
         // Constructor
         public Vagt()
