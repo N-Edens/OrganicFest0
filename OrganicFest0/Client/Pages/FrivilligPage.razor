@@ -26,13 +26,13 @@
                         {
                             <div class="mb-3">
                                 <strong>VagtID:</strong> @vagt.VID<br />
-                                <strong>Jobnavn:</strong> @vagt.Jobnavn<br />
+                                <strong>Jobnavn:</strong> @vagt.Jobnavn<br /> 
+                                <strong>Description:</strong> @vagt.Description<br />    
                                 <strong>StartDate:</strong> @vagt.Startdate<br />
                                 <strong>EndDate:</strong> @vagt.Enddate<br />
-                                <strong>Priority:</strong> @vagt.Priority<br />  
+                                <strong>Priority:</strong> <p class="@GetPriorityClass(vagt.Priority)">@GetPriorityText(vagt.Priority)</p> <br/>
                                 <button class="btn btn-sm btn-success" @onclick="() => AddVagtToRightBox(vagt)">Tilføj</button>
                                 <button class="btn btn-sm btn-danger" @onclick="() => DeleteVagt(vagt)">Slet</button>
-                                <button class="btn btn-sm btn-success">Prioter vagt</button>
                             </div>
                             <hr />
                         }
@@ -52,10 +52,11 @@
                         {
                             <div class="mb-3">
                                 <strong>VagtID:</strong> @vagt.VID<br />
-                                <strong>Jobnavn:</strong> @vagt.Jobnavn<br />
+                                <strong>Jobnavn:</strong> @vagt.Jobnavn<br /> 
+                                <strong>Description:</strong> @vagt.Description<br />
                                 <strong>StartDate:</strong> @vagt.Startdate<br />
                                 <strong>EndDate:</strong> @vagt.Enddate<br />
-                                <strong>Priority:</strong> @vagt.Priority<br />
+                                <strong>Priority:</strong> <p class="@GetPriorityClass(vagt.Priority)">@GetPriorityText(vagt.Priority)</p> <br/>
                                 <button class="btn btn-sm btn-success" @onclick="() => FjernVagtFromRightBox(vagt)">Fjern</button>
                                 <button class="btn btn-sm btn-danger" @onclick="() => DeleteVagt(vagt)">Slet</button>
                             </div>
@@ -71,13 +72,13 @@
 @code {
     private List<Vagt> vagtList = new List<Vagt>();
     private List<Vagt> mineVagter = new List<Vagt>();
-
+    
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            // Use the VagtService to get all vagts
-            vagtList = (await VagtService.GetAllVagts()).ToList();
+            var allVagts = await VagtService.GetAllVagts();
+            vagtList = allVagts.OrderByDescending(vagt => vagt.Priority).ToList();
         }
         catch (Exception ex)
         {
@@ -85,30 +86,43 @@
         }
     }
 
-    // Metode til at håndtere sletning af en vagt
     private async Task DeleteVagt(Vagt vagt)
     {
-        // Fjern den valgte vagt fra listen
         vagtList.Remove(vagt);
-
         mineVagter.Remove(vagt);
     }
 
-    // Metode til at håndtere tilføjelse af en vagt til højre boks
     private async Task AddVagtToRightBox(Vagt vagt)
     {
-        // Tilføj den valgte vagt til højre boks
         mineVagter.Add(vagt);
-
         vagtList.Remove(vagt);
     }
 
-    // Metode til at håndtere fjernelse af en vagt fra højre boks
     private async Task FjernVagtFromRightBox(Vagt vagt)
     {
-        // Tilføj den valgte vagt til venstre boks
         vagtList.Add(vagt);
-
         mineVagter.Remove(vagt);
     }
+
+    private string GetPriorityClass(bool? priority)
+    {
+        if (priority.HasValue)
+        {
+            return priority.Value ? "priority" : "";
+        }
+
+        return ""; 
+    }
+
+    private string GetPriorityText(bool? priority)
+    {
+        if (priority.HasValue)
+        {
+            return priority.Value ? "Prioriteret" : "Ikke Prioriteret";
+        }
+        
+        return "Vagt opretet uden om systemet"; 
+        
+    }
+    
 }

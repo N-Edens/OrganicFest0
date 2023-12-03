@@ -22,8 +22,19 @@ namespace OrganicFest.Shared
         public DateTime? Startdate { get; set; } = null;
 
         public DateTime? Enddate { get; set; } = null;
-        
-        public bool Priority { get; set; } = false;
+
+        public bool? Priority { get; set; } 
+        [BsonIgnore]
+        public string PriorityAsString
+        {
+            get => Priority.HasValue ? Priority.ToString() : "";
+            set => Priority = value switch
+            {
+                "True" => true,
+                "False" => false,
+                _ => null
+            };
+        }
 
         // Constructor
         public Vagt()

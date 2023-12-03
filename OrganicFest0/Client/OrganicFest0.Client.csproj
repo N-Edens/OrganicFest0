@@ -34,7 +34,6 @@
     <None Remove="Services\JobService\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Pages\" />
     <Folder Include="Services\" />
     <Folder Include="Services\VagtService\" />
     <Folder Include="Services\FrivilligService\" />
