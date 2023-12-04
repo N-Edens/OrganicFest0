@@ -2,10 +2,16 @@
 @using OrganicFest0.Client.Services
 @using OrganicFest.Shared
 @inject IVagtService VagtService
+@inject NavigationManager NavigationManager
 
 <div class="container-fluid">
     <div class="row">
-
+        <div class="col-md-12 mt-3">
+            <button class="btn btn-primary" @onclick="GåTilMinProfil">Min Profil</button>
+        </div>
+    </div>
+</div>
+<br>
         <!-- Left Box -->
         <div class="col-md-6">
             <div class="card">
@@ -66,8 +72,6 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
 @code {
     private List<Vagt> vagtList = new List<Vagt>();
@@ -124,5 +128,10 @@
         return "Vagt opretet uden om systemet"; 
         
     }
-    
+    // styre URL-navigation imellem sider via link tilknyttet til knap.
+
+    private void GåTilMinProfil()
+    {
+        NavigationManager.NavigateTo("/minprofil");
+    }
 }

@@ -1,0 +1,77 @@
+﻿@page "/minprofil"
+@using OrganicFest.Shared
+
+
+<!-- En container til formularen -->
+<div class="form-container">
+    <h3>Min Profil</h3>
+
+    <!-- Knap til at åbne/redigere formularen -->
+    <button class="form-submit" @onclick="RedigerProfil">Rediger Profil</button>
+
+    <!-- Container til at vise formularen -->
+    <div style="margin-top: 10px;">
+        <!-- Tilføjet lidt mellemrum mellem knap og formular -->
+        @if (visRedigeringsFormular)
+        {
+            <!-- Vis en formular til redigering af oplysninger -->
+            <EditForm Model="@frivillig" OnValidSubmit="GemProfil">
+                <!-- Valideringskomponenter -->
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <!-- Gruppe for navn -->
+                <div class="form-group">
+                    <label class="form-label">Name:</label>
+                    <InputText class="form-input" @bind-Value="frivillig.Name" />
+                </div>
+
+                <!-- Gruppe for email -->
+                <div class="form-group">
+                    <label class="form-label">Email:</label>
+                    <InputText class="form-input" @bind-Value="frivillig.Email" />
+                </div>
+
+                <!-- Gruppe for telefonnummer -->
+                <div class="form-group">
+                    <label class="form-label">Telefonnummer:</label>
+                    <InputNumber class="form-input" @bind-Value="frivillig.Telefonnummer" />
+                </div>
+
+                <!-- Tilføj andre felter efter behov -->
+                <!-- Gem-knap -->
+                <button class="form-submit" type="submit">Gem</button>
+            </EditForm>
+        }
+        else
+        {
+            <!-- Vis frivilligoplysninger -->
+            <p><strong>Name:</strong> @frivillig.Name</p>
+            <p><strong>Email:</strong> @frivillig.Email</p>
+            <p><strong>Telefonnummer:</strong> @frivillig.Telefonnummer</p>
+            <!-- Vis andre oplysninger efter behov -->
+        }
+
+    </div>
+</div>
+
+@code {
+    // Datamodel for frivillig
+    private Frivillig frivillig = new Frivillig();
+
+    // Boolean for at styre synligheden af redigeringsformularen
+    private bool visRedigeringsFormular = false;
+
+    // Metode til at åbne/redigere formularen
+    private void RedigerProfil()
+    {
+        visRedigeringsFormular = true;
+    }
+
+    // Metode til at gemme opdaterede oplysninger
+    private async Task GemProfil()
+    {
+        // Implementer logik for at gemme opdaterede oplysninger sikkert i MongoDB eller hvor du opbevarer dem
+        visRedigeringsFormular = false;
+    }
+}
