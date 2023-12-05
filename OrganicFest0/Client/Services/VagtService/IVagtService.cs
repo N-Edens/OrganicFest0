@@ -9,7 +9,7 @@ namespace OrganicFest0.Client.Services
         Task<IEnumerable<Vagt>> GetAllVagts();
         Task AddVagt(Vagt vagt);
         Task UpdateVagt(Vagt vagt);
-      //  Task DeleteVagt(int VID);
+        Task DeleteVagt(int VID);
     }
 }
 
