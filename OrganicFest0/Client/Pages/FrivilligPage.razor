@@ -37,6 +37,7 @@
                                 <strong>Jobnavn:</strong> @vagt.Jobnavn<br />
                                 <strong>StartDate:</strong> @vagt.Startdate<br />
                                 <strong>EndDate:</strong> @vagt.Enddate<br />
+                                <strong>Priority:</strong> <p class="@GetPriorityClass(vagt.Priority)">@GetPriorityText(vagt.Priority)</p> <br />
                                 <button class="btn btn-sm btn-success" @onclick="() => AddVagtToRightBox(vagt)">Tilføj</button>
                                 <button class="btn btn-sm btn-danger" @onclick="() => DeleteVagt(vagt)">Slet</button>
                             </div>
@@ -124,6 +125,27 @@
         // Tilføj den valgte vagt til venstre boks
         vagt.FID = 0;
         await VagtService.UpdateVagt(vagt);
+    }
+
+    private string GetPriorityClass(bool? priority)
+    {
+        if (priority.HasValue)
+        {
+            return priority.Value ? "priority" : "";
+        }
+
+        return "";
+    }
+
+    private string GetPriorityText(bool? priority)
+    {
+        if (priority.HasValue)
+        {
+            return priority.Value ? "Prioriteret" : "Ikke Prioriteret";
+        }
+
+        return "Vagt opretet uden om systemet";
+
     }
 
     // Metode til at håndtere logud

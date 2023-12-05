@@ -30,5 +30,10 @@ namespace OrganicFest0.Client.Services
             return http.PutAsJsonAsync("api/vagt/update", vagt);
         }
 
+/*       public async Task DeleteVagt(int VID)
+        {
+            await http.DeleteFromJsonAsync($"api/vagt/delete/{VID}");
+        }*/
+
     }
 }
