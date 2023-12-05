@@ -2,6 +2,7 @@
 using MongoDB.Driver;
 using OrganicFest.Shared;
 using OrganicFest.Server.Repository;
+using System.Xml.Linq;
 
 namespace OrganicFest.Server.Repository
 {
@@ -75,7 +76,10 @@ namespace OrganicFest.Server.Repository
 
         public void UpdateVagt(Vagt vagt)
         {
-            throw new NotImplementedException();
+            var update = Builders<Vagt>.Update.Set(v => v.FID, vagt.FID);
+            collection.UpdateOne(v => v.VID == vagt.VID, update);
+            collection.UpdateOne(v => v.FID == 0, update);
+
         }
     }
 }

@@ -9,7 +9,7 @@
     <h1>Welcome, @frivillig?.Name FID: @frivillig?.FID</h1>
 
     <div class="mb-3">
-        <button class="btn btn-warning" @onclick="HandleLogout">Log out</button>
+        <button class="btn btn-warning" @onclick="HandleLogout">Logout</button>
     </div>
 
     <div class="row">
@@ -30,7 +30,7 @@
                     }
                     else
                     {
-                        @foreach (var vagt in vagtList)
+                        @foreach (var vagt in vagtList.Where(v => v.FID == 0))
                         {
                             <div class="mb-3">
                                 <strong>VagtID:</strong> @vagt.VID<br />
@@ -54,7 +54,7 @@
                     <h4>Mine Vagter</h4>
                     <!-- Display vagter added to the right box -->
                     <ul>
-                        @foreach (var vagt in mineVagter)
+                        @foreach (var vagt in mineVagter.Where(v => v.FID == frivillig.FID))
                         {
                             <div class="mb-3">
                                 <strong>VagtID:</strong> @vagt.VID<br />
@@ -90,7 +90,10 @@
             try
             {
                 // Brug VagtService til at få alle vagter
-                vagtList = (await VagtService.GetAllVagts()).ToList();
+                var allVagts = (await VagtService.GetAllVagts());
+                vagtList = allVagts.OrderByDescending(vagt => vagt.Priority).ToList();
+                mineVagter = allVagts.OrderByDescending(vagt => vagt.Startdate).ToList();
+
             }
             catch (Exception ex)
             {
@@ -111,16 +114,16 @@
     private async Task AddVagtToRightBox(Vagt vagt)
     {
         // Tilføj den valgte vagt til højre boks
-        mineVagter.Add(vagt);
-        vagtList.Remove(vagt);
+        vagt.FID = frivillig.FID;
+        await VagtService.UpdateVagt(vagt);
     }
 
     // Metode til at håndtere fjernelse af en vagt fra højre boks
     private async Task FjernVagtFromRightBox(Vagt vagt)
     {
         // Tilføj den valgte vagt til venstre boks
-        vagtList.Add(vagt);
-        mineVagter.Remove(vagt);
+        vagt.FID = 0;
+        await VagtService.UpdateVagt(vagt);
     }
 
     // Metode til at håndtere logud

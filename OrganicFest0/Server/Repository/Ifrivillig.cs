@@ -11,5 +11,6 @@ namespace OrganicFest.Server.Repository
         void UpdateFrivillig(Frivillig frivillig);
         Task<Frivillig> GetFrivilligByEmail(string email);
 
+
     }
 }

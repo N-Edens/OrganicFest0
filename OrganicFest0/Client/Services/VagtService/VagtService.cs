@@ -24,5 +24,11 @@ namespace OrganicFest0.Client.Services
         {
             await http.PostAsJsonAsync("api/vagt", vagt);
         }
+
+        public Task UpdateVagt(Vagt vagt)
+        {
+            return http.PutAsJsonAsync("api/vagt/update", vagt);
+        }
+
     }
 }

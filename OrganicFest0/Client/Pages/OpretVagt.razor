@@ -46,6 +46,15 @@
         <input type="datetime-local" id="EndDateTime" @bind="vagt.Enddate" class="form-control" required />
     </div>
 
+    <div>
+        <label for="Priotering" class="bold-label"> Prioteret :</label>
+        <select @bind="vagt.PriorityAsString" class="form-control">
+            <option value=""> ---- Vælg prioteret her ----- </option>
+            <option value="True">Ja</option>
+            <option value="False">Nej</option>
+        </select>
+    </div>
+
     <div class="col-12 mb-3">
         <button type="submit" class="btn btn-primary">Tilføj</button>
     </div>

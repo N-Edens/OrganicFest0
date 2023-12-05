@@ -10,7 +10,7 @@ namespace OrganicFest.Shared
         public string Id { get; set; } = "";
 
         [BsonElement("FID")]
-        public int FID { get; set; }
+        public int FID { get; set; }  // Add this property to store Frivillig ID
 
         public int VID { get; set; }
 
@@ -23,7 +23,18 @@ namespace OrganicFest.Shared
 
         public DateTime? Enddate { get; set; } = null;
 
-        public bool Priority { get; set; }
+        public bool? Priority { get; set; }
+        [BsonIgnore]
+        public string PriorityAsString
+        {
+            get => Priority.HasValue ? Priority.ToString() : "";
+            set => Priority = value switch
+            {
+                "True" => true,
+                "False" => false,
+                _ => null
+            };
+        }
 
         // Constructor
         public Vagt()
