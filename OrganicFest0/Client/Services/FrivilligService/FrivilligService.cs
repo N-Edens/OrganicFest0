@@ -24,5 +24,10 @@ namespace OrganicFest0.Client.Services
         {
             await http.PostAsJsonAsync("api/frivillig", frivillig);
         }
+
+        public Task UpdateFrivillig(Frivillig frivillig)
+        {
+            return http.PutAsJsonAsync("api/frivillig/update", frivillig);
+        }
     }
 }

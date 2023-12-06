@@ -79,8 +79,16 @@
 
             public void UpdateFrivillig(Frivillig frivillig)
             {
-                throw new NotImplementedException();
-            }
+            var filter = Builders<Frivillig>.Filter.Eq(f => f.FID, frivillig.FID);
+            var update = Builders<Frivillig>.Update
+                .Set(f => f.Name, frivillig.Name)
+                .Set(f => f.Telefonnummer, frivillig.Telefonnummer)
+                .Set(f => f.Email, frivillig.Email);
+
+            collection.UpdateOne(filter, update);
+        }
+
+
             // Ny metode til at hente en frivillig baseret på e-mail
             public async Task<Frivillig> GetFrivilligByEmail(string email)
             {

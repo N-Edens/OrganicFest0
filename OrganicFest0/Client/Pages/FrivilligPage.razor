@@ -39,7 +39,10 @@
                                 <strong>EndDate:</strong> @vagt.Enddate<br />
                                 <strong>Priority:</strong> <p class="@GetPriorityClass(vagt.Priority)">@GetPriorityText(vagt.Priority)</p> <br />
                                 <button class="btn btn-sm btn-success" @onclick="() => AddVagtToRightBox(vagt)">Tilføj</button>
-                                <button class="btn btn-sm btn-danger" @onclick="() => DeleteVagt(vagt)">Slet</button>
+                                @if (frivillig.IsCoordinator)
+                                    {
+                                        <button class="btn btn-sm btn-danger" @onclick="() => DeleteVagt(vagt)">Slet</button>
+                                    }
                             </div>
                             <hr />
                         }
@@ -74,6 +77,8 @@
         </div>
     </div>
 </div>
+<p>Se Profil  <NavLink href="/minprofil">Se din profil her</NavLink></p>
+
 
 @code {
     private List<Vagt> vagtList = new List<Vagt>();
@@ -106,9 +111,22 @@
     // Metode til at håndtere sletning af en vagt
     private async Task DeleteVagt(Vagt vagt)
     {
-        // Fjern den valgte vagt fra listen
-        vagtList.Remove(vagt);
-        mineVagter.Remove(vagt);
+        try
+        {
+            // Kald VagtService for at slette vagten fra databasen
+            await VagtService.DeleteVagt(vagt.VID);
+
+            // Opdater lokal liste efter sletning
+            vagtList = (await VagtService.GetAllVagts()).OrderByDescending(v => v.Priority).ToList();
+            mineVagter = (await VagtService.GetAllVagts()).OrderByDescending(v => v.Startdate).ToList();
+
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Fejl ved sletning af vagt: {ex.Message}");
+            // Behandle fejlen efter behov (f.eks. vis en fejlbesked)
+        }
     }
 
     // Metode til at håndtere tilføjelse af en vagt til højre boks

@@ -39,19 +39,17 @@ namespace OrganicFest.Server.Controllers
         }
 
         [HttpPut]
+        [Route("update")]
         public void UpdateFrivillig(Frivillig frivillig)
         {
             fRepo.UpdateFrivillig(frivillig);
         }
 
-        // ... (din eksisterende kode)
-
         [HttpPost]
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] Frivillig loginFrivillig)
         {
-            try
-            {
+
                 var existingFrivillig = await fRepo.GetFrivilligByEmail(loginFrivillig.Email);
 
                 if (existingFrivillig != null && existingFrivillig.Password == loginFrivillig.Password)
@@ -64,11 +62,6 @@ namespace OrganicFest.Server.Controllers
                     // Login failed
                     return BadRequest("Incorrect email or password.");
                 }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
         }
 
     }

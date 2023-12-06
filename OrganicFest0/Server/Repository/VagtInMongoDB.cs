@@ -66,7 +66,7 @@ namespace OrganicFest.Server.Repository
         public void DeleteVagt(int VID)
         {
             var deleteResult = collection
-                .DeleteOne(Builders<Vagt>.Filter.Where(r => r.VID == VID));
+                .DeleteOne(Builders<Vagt>.Filter.Where(v => v.VID == VID));
         }
 
         public Vagt[] GetAllVagts()
@@ -78,8 +78,7 @@ namespace OrganicFest.Server.Repository
         {
             var update = Builders<Vagt>.Update.Set(v => v.FID, vagt.FID);
             collection.UpdateOne(v => v.VID == vagt.VID, update);
-            collection.UpdateOne(v => v.FID == 0, update);
-
+            
         }
     }
 }

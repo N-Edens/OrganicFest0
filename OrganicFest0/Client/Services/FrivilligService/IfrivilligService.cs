@@ -7,5 +7,6 @@ namespace OrganicFest0.Client.Services
     {
         Task<IEnumerable<Frivillig>> GetAllFrivillige();
         Task AddFrivillig(Frivillig frivillig);
+        Task UpdateFrivillig(Frivillig frivillig);
     }
 }

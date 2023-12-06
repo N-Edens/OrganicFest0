@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿// VagtService.cs
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -30,10 +31,9 @@ namespace OrganicFest0.Client.Services
             return http.PutAsJsonAsync("api/vagt/update", vagt);
         }
 
-/*       public async Task DeleteVagt(int VID)
+        public async Task DeleteVagt(int vagtId)
         {
-            await http.DeleteFromJsonAsync($"api/vagt/delete/{VID}");
-        }*/
-
+            await http.DeleteAsync($"api/vagt/delete/{vagtId}");
+        }
     }
 }

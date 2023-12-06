@@ -23,6 +23,8 @@ namespace OrganicFest.Shared
 
         public DateTime? Enddate { get; set; } = null;
 
+        // public bool IsDeleted { get; set; } = false;
+
         public bool? Priority { get; set; }
         [BsonIgnore]
         public string PriorityAsString
