@@ -1,0 +1,151 @@
+﻿@page "/SeVagter"
+@using OrganicFest.Shared
+@using OrganicFest0.Client.Services
+@inject Blazored.LocalStorage.ILocalStorageService localStore
+@inject NavigationManager NavManager
+@inject IVagtService VagtService
+<PageTitle>Se Vagter</PageTitle>
+
+<h1>SE VAGTER</h1>
+
+@if (visRedigeringsFormular)
+{
+    <!-- Vis en formular til redigering af vagt -->
+    <EditForm Model="@vagt" OnValidSubmit="ChangeVagt">
+        <!-- Valideringskomponenter -->
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <!-- Gruppe for vagtinformation -->
+        <div class="form-group">
+            <label class="form-label">Jobnavn:</label>
+            <InputText class="form-input" @bind-Value="vagt.Jobnavn" />
+        </div>
+
+        <!-- Tilføj andre felter efter behov -->
+        <!-- Gem-knap -->
+        <button class="form-submit" type="submit">Gem</button>
+    </EditForm>
+}
+
+<!-- Checkbox til at filtrere vagter uden frivillige -->
+<div class="mb-3">
+    <label for="frivilligFilter">Vis vagter uden frivillige</label>
+    <input type="checkbox" @bind="visVagterUdenFrivillige" id="frivilligFilter" />
+</div>
+
+<!-- Dropdown til at vælge sortering -->
+<div class="mb-3">
+    <label for="sorterVagter">Sorter vagter efter:</label>
+    <select @bind="valgtSortering" id="sorterVagter" class="form-control">
+        <option value="Jobnavn">Jobnavn</option>
+        <option value="Startdate">Startdato</option>
+        <option value="Priority">Prioritet</option>
+    </select>
+</div>
+
+<!-- Tabel til at vise alle vagter -->
+<table class="table">
+    <thead>
+        <tr>
+            <th>Vagt ID</th>
+            <th>FrivilligID</th>
+            <th>Jobnavn</th>
+            <th>Beskrivelse</th>
+            <th>Startdato</th>
+            <th>Slutdato</th>
+            <th>Prioritet</th>
+            <th>Handlinger</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var vagt in filtreredeVagter)
+        {
+            <tr>
+                <td>@vagt.VID</td>
+                <td>@vagt.FID</td>
+                <td>@vagt.Jobnavn</td>
+                <td>@vagt.Description</td>
+                <td>@(vagt.Startdate.HasValue ? vagt.Startdate.Value.ToShortDateString() : "Ingen dato")</td>
+                <td>@(vagt.Enddate.HasValue ? vagt.Enddate.Value.ToShortDateString() : "Ingen dato")</td>
+                <td>@vagt.PriorityAsString</td>
+                <td>
+                    <button class="form-submit" @onclick="() => RedigerVagt(vagt)">Rediger Profil</button>
+                    <button class="btn btn-danger btn-sm" @onclick="() => SletVagt(vagt.VID)">Slet</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+        List<Vagt> alleVagter = new List<Vagt>(); // Liste til at gemme alle vagter
+
+        bool visVagterUdenFrivillige = false; // Variabel til at holde styr på, om checkboxen er markeret
+
+        string valgtSortering = "Jobnavn"; // Standard sortering
+
+        List<Vagt> filtreredeVagter => FilterOgSorterVagter(); // Liste af filtrerede og sorteret vagter baseret på valgt sortering
+
+        private Frivillig frivillig = new Frivillig();
+
+        protected override async Task OnInitializedAsync()
+        {
+            // Hent alle vagter fra service ved komponentinitialisering
+            alleVagter = (await VagtService.GetAllVagts()).ToList();
+            frivillig = await localStore.GetItemAsync<Frivillig>("loggedInUser");
+
+            if (frivillig == null)
+                NavManager.NavigateTo("/login");
+        }
+
+    private List<Vagt> FilterOgSorterVagter()
+    {
+        // Filtrer og sorter vagter baseret på checkbox og valgt sortering
+        var filtrerede = visVagterUdenFrivillige ? alleVagter.Where(v => v.FID == 0).ToList() : alleVagter.ToList();
+
+        switch (valgtSortering)
+        {
+            case "Startdate":
+                filtrerede = filtrerede.OrderBy(v => v.Startdate).ToList(); // Sorter efter startdato
+                break;
+            case "Priority":
+                filtrerede = filtrerede.OrderByDescending(v => v.Priority).ToList(); // Sorter efter prioritet (højeste først)
+                break;
+            default:
+                filtrerede = filtrerede.OrderBy(v => v.Jobnavn).ToList(); // Sorter efter jobnavn (standard)
+                break;
+        }
+
+        return filtrerede; // Returnerer den filtrerede og sorteret liste af vagter
+    }
+
+    private Vagt vagt = new Vagt();
+
+    private bool visRedigeringsFormular = false;
+
+    // Metode til at åbne/redigere formular en
+    private void RedigerVagt(Vagt selectedVagt)
+    {
+        vagt = selectedVagt;
+        visRedigeringsFormular = true;
+    }
+
+    private async Task ChangeVagt()
+    {
+        visRedigeringsFormular = false;
+        await VagtService.UpdateVagt(vagt); // Update the profile in the database
+
+        // Save the changes to local storage
+        //await localStore.SetItemAsync("loggedInUser", vagt);
+    }
+
+    private async Task SletVagt(int VID)
+    {
+        // Slet vagten ved at kalde sletmetoden i VagtService
+        await VagtService.DeleteVagt(VID);
+
+        // Opdater den lokale liste af vagter efter sletning
+        alleVagter = (await VagtService.GetAllVagts()).ToList();
+    }
+}

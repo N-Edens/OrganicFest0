@@ -10,6 +10,7 @@ namespace OrganicFest0.Client.Services
         Task AddVagt(Vagt vagt);
         Task UpdateVagt(Vagt vagt);
         Task DeleteVagt(int vagtId);
+        Task ChangeVagt(Vagt vagt);
     }
 }
 

@@ -9,5 +9,6 @@ namespace OrganicFest.Server.Repository
         void DeleteVagt(int VID);
         Vagt[] GetAllVagts();
         void UpdateVagt(Vagt vagt);
+        void ChangeVagt(Vagt vagt);
     }
 }

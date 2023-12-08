@@ -30,7 +30,7 @@
                     }
                     else
                     {
-                        @foreach (var vagt in vagtList.Where(v => v.FID == 0))
+                        @foreach (var vagt in vagtList.Where(v => v.FID == 0 && !mineVagter.Any(mv => mv.Startdate == v.Startdate)))
                         {
                             <div class="mb-3">
                                 <strong>VagtID:</strong> @vagt.VID<br />
@@ -40,9 +40,9 @@
                                 <strong>Priority:</strong> <p class="@GetPriorityClass(vagt.Priority)">@GetPriorityText(vagt.Priority)</p> <br />
                                 <button class="btn btn-sm btn-success" @onclick="() => AddVagtToRightBox(vagt)">Tilføj</button>
                                 @if (frivillig.IsCoordinator)
-                                    {
-                                        <button class="btn btn-sm btn-danger" @onclick="() => DeleteVagt(vagt)">Slet</button>
-                                    }
+                                {
+                                    <button class="btn btn-sm btn-danger" @onclick="() => DeleteVagt(vagt)">Slet</button>
+                                }
                             </div>
                             <hr />
                         }

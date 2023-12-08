@@ -76,9 +76,19 @@ namespace OrganicFest.Server.Repository
 
         public void UpdateVagt(Vagt vagt)
         {
-            var update = Builders<Vagt>.Update.Set(v => v.FID, vagt.FID);
-            collection.UpdateOne(v => v.VID == vagt.VID, update);
-            
+            var updateFID = Builders<Vagt>.Update.Set(v => v.FID, vagt.FID);
+            var updateJobnavn = Builders<Vagt>.Update.Set(v => v.Jobnavn, vagt.Jobnavn);
+
+            collection.UpdateOne(v => v.VID == vagt.VID, updateFID);
+            collection.UpdateOne(v => v.VID == vagt.VID, updateJobnavn);
+        }
+
+        public void ChangeVagt(Vagt vagt)
+        {
+            var change = Builders<Vagt>.Update
+                .Set(v => v.Jobnavn, vagt.Jobnavn)
+                .Set(v => v.Description, vagt.Description);
+            collection.UpdateOne(v => v.VID == vagt.VID, change);
         }
     }
 }
