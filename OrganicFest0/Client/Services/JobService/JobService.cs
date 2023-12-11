@@ -4,7 +4,7 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using OrganicFest.Shared;
 
-namespace OrganicFest0.Client.Services
+namespace OrganicFest.Client.Services
 {
     public class JobService : IJobService
     {

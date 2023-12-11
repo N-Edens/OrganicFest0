@@ -1,9 +1,10 @@
 ﻿@page "/SeVagter"
 @using OrganicFest.Shared
-@using OrganicFest0.Client.Services
+@using OrganicFest.Client.Services
 @inject Blazored.LocalStorage.ILocalStorageService localStore
 @inject NavigationManager NavManager
 @inject IVagtService VagtService
+@inject IJobService JobService
 <PageTitle>Se Vagter</PageTitle>
 
 <h1>SE VAGTER</h1>
@@ -11,21 +12,49 @@
 @if (visRedigeringsFormular)
 {
     <!-- Vis en formular til redigering af vagt -->
-    <EditForm Model="@vagt" OnValidSubmit="ChangeVagt">
-        <!-- Valideringskomponenter -->
-        <DataAnnotationsValidator />
-        <ValidationSummary />
+<EditForm Model="@vagt" OnValidSubmit="ChangeVagt">
+    <!-- Valideringskomponenter -->
+    <DataAnnotationsValidator />
+    <ValidationSummary />
 
-        <!-- Gruppe for vagtinformation -->
-        <div class="form-group">
-            <label class="form-label">Jobnavn:</label>
-            <InputText class="form-input" @bind-Value="vagt.Jobnavn" />
-        </div>
+    <!-- Gruppe for vagtinformation -->
+    <div>
+        <label for="Jobnavn" class="bold-label"> Job :</label>
+        <select @bind="vagt.Jobnavn" class="form-control">
+            <option value=""> ---- Vælg job her ----- </option>
+            @if (jobs == null)
+            {
+                <p><em>Loading...</em></p>
+            }
+            else
+            {
+                @foreach (var job in jobs)
+                {
+                    <option value="@job.Jobnavn">@job.Jobnavn</option>
+                }
+            }
+        </select>
+    </div>
 
-        <!-- Tilføj andre felter efter behov -->
-        <!-- Gem-knap -->
-        <button class="form-submit" type="submit">Gem</button>
-    </EditForm>
+    <div class="col-md-12 mb-6">
+        <label for="Beskrivelse">Beskrivelse</label>
+        <InputText id="Beskrivelse" @bind-Value="vagt.Description" class="form-control" style="height: 150px;" required />
+    </div>
+    <div class="col-md-6 mb-3">
+        <label for="StartDateTime">Start DateTime</label>
+        <input type="datetime-local" id="StartDateTime" @bind="vagt.Startdate" class="form-control" required />
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label for="EndDateTime">End DateTime</label>
+        <input type="datetime-local" id="EndDateTime" @bind="vagt.Enddate" class="form-control" required />
+    </div>
+
+
+    <!-- Tilføj andre felter efter behov -->
+    <!-- Gem-knap -->
+    <button class="form-submit" type="submit">Gem</button>
+</EditForm>
 }
 
 <!-- Checkbox til at filtrere vagter uden frivillige -->
@@ -79,25 +108,38 @@
 </table>
 
 @code {
-        List<Vagt> alleVagter = new List<Vagt>(); // Liste til at gemme alle vagter
+    List<Vagt> alleVagter = new List<Vagt>(); // Liste til at gemme alle vagter
 
-        bool visVagterUdenFrivillige = false; // Variabel til at holde styr på, om checkboxen er markeret
+    bool visVagterUdenFrivillige = false; // Variabel til at holde styr på, om checkboxen er markeret
 
-        string valgtSortering = "Jobnavn"; // Standard sortering
+    string valgtSortering = "Jobnavn"; // Standard sortering
 
-        List<Vagt> filtreredeVagter => FilterOgSorterVagter(); // Liste af filtrerede og sorteret vagter baseret på valgt sortering
+    List<Vagt> filtreredeVagter => FilterOgSorterVagter(); // Liste af filtrerede og sorteret vagter baseret på valgt sortering
 
-        private Frivillig frivillig = new Frivillig();
+    private Bruger frivillig = new Bruger();
 
-        protected override async Task OnInitializedAsync()
+    private List<Job> jobs = new List<Job>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Hent alle vagter fra service ved komponentinitialisering
+        alleVagter = (await VagtService.GetAllVagts()).ToList();
+
+        var currentUser = await localStore.GetItemAsync<Bruger>("loggedInUser");
+        if (currentUser == null)
+            NavManager.NavigateTo("/login");
+
+        // Kontroller om brugeren er koordinator
+        if (!currentUser.IsCoordinator)
         {
-            // Hent alle vagter fra service ved komponentinitialisering
-            alleVagter = (await VagtService.GetAllVagts()).ToList();
-            frivillig = await localStore.GetItemAsync<Frivillig>("loggedInUser");
-
-            if (frivillig == null)
-                NavManager.NavigateTo("/login");
+            // Hvis brugeren ikke er koordinator, kan du omdirigere dem til en anden side, f.eks. "/notauthorized"
+            NavManager.NavigateTo("/login");
+            return;
         }
+
+        jobs = (await JobService.GetAllJobs()).ToList();
+
+    }
 
     private List<Vagt> FilterOgSorterVagter()
     {

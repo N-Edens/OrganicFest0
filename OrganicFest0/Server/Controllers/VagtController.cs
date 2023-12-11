@@ -44,12 +44,5 @@ namespace OrganicFest.Server.Controllers
             vRepo.UpdateVagt(vagt);
         }
 
-        [HttpPut]
-        [Route("change")]
-        public void ChangeVagt(Vagt vagt)
-        {
-            vRepo.ChangeVagt(vagt);
-        }
-
     }
 }

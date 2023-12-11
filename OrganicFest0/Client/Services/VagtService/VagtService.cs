@@ -5,7 +5,7 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using OrganicFest.Shared;
 
-namespace OrganicFest0.Client.Services
+namespace OrganicFest.Client.Services
 {
     public class VagtService : IVagtService
     {
@@ -36,10 +36,6 @@ namespace OrganicFest0.Client.Services
             await http.DeleteAsync($"api/vagt/delete/{vagtId}");
         }
 
-        public Task ChangeVagt(Vagt vagt)
-        {
-            return http.PutAsJsonAsync("api/vagt/change", vagt);
-        }
 
     }
 }

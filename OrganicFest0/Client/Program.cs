@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using OrganicFest0.Client;
-using OrganicFest0.Client.Services;
+using OrganicFest.Client.Services;
 using Blazored.LocalStorage;
 
 

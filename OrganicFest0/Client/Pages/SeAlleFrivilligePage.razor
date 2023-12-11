@@ -1,0 +1,120 @@
+﻿@page "/SeFrivillige"
+@using OrganicFest.Shared
+@using OrganicFest.Client.Services
+@inject Blazored.LocalStorage.ILocalStorageService localStore
+@inject NavigationManager NavManager
+@inject IFrivilligService FrivilligService
+
+<PageTitle>Se Frivillige</PageTitle>
+
+<h1>Se frivillige</h1>
+
+@if (visRedigeringsFormular)
+{
+    <!-- Vis en formular til redigering af frivillig -->
+<EditForm Model="@frivillig" OnValidSubmit="ChangeFrivillig">
+    <!-- Valideringskomponenter -->
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="col-md-12 mb-6">
+        <label for="Navn">Navn</label>
+        <InputText id="Navn" @bind-Value="frivillig.Name" class="form-control"  />
+    </div>
+    <div class="col-md-12 mb-6">
+        <label for="Email">Email</label>
+        <InputText id="Email" @bind-Value="frivillig.Email" class="form-control"  />
+    </div>
+    <div class="col-md-12 mb-6">
+        <label for="Telefonnummer">Telefonnummer</label>
+        <InputNumber class="form-input" @bind-Value="frivillig.Telefonnummer" />
+    </div>
+
+    <div class="col-md-12 mb-6">
+        <label for="IsCoordinator">Koordinator</label>
+        <InputCheckbox id="IsCoordinator" @bind-Value="frivillig.IsCoordinator" />
+    </div>
+    <!-- Gem-knap -->
+    <button class="form-submit" type="submit">Gem</button>
+</EditForm>
+}
+
+<!-- Tabel til at vise alle frivillige -->
+<table class="table">
+    <thead>
+        <tr>
+            <th>FrivilligID</th>
+            <th>Navn</th>
+            <th>Email</th>
+            <th>Telefonnummer</th>
+            <th>Koordinator</th>
+            <th>Password</th>
+            <th>Handlinger</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var frivillig in filtreredeFrivillige)
+        {
+            <tr>
+                <td>@frivillig.FID</td>
+                <td>@frivillig.Name</td>
+                <td>@frivillig.Email</td>
+                <td>@frivillig.Telefonnummer</td>
+                <td>@frivillig.IsCoordinator</td>
+                <td>@frivillig.Password</td>
+                <td>
+                    <button class="form-submit" @onclick="() => RedigerFrivillig(frivillig)">Rediger Profil</button>
+                    <button class="btn btn-danger btn-sm" @onclick="() => SletFrivillig(frivillig.FID)">Slet</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private Bruger frivillig = new Bruger();
+    private List<Bruger> alleFrivillige = new List<Bruger>();
+    private List<Bruger> filtreredeFrivillige = new List<Bruger>();
+    private bool visRedigeringsFormular = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var currentUser = await localStore.GetItemAsync<Bruger>("loggedInUser");
+        if (currentUser == null)
+            NavManager.NavigateTo("/login");
+
+        // Kontroller om brugeren er koordinator
+        if (!currentUser.IsCoordinator)
+        {
+            // Hvis brugeren ikke er koordinator, kan du omdirigere dem til en anden side, f.eks. "/notauthorized"
+            NavManager.NavigateTo("/frivillig");
+            return;
+        }
+
+        // Hent alle frivillige fra service ved komponentinitialisering
+        alleFrivillige = (await FrivilligService.GetAllFrivillige()).ToList();
+        filtreredeFrivillige = alleFrivillige;
+    }
+
+
+
+    private void RedigerFrivillig(Bruger selectedFrivillig)
+    {
+        frivillig = selectedFrivillig;
+        visRedigeringsFormular = true;
+    }
+
+    private async Task ChangeFrivillig()
+    {
+        visRedigeringsFormular = false;
+        await FrivilligService.UpdateFrivillig(frivillig); // Update the profile in the database
+        alleFrivillige = (await FrivilligService.GetAllFrivillige()).ToList(); // Opdater den lokale liste af frivillige efter ændring
+    }
+
+    private async Task SletFrivillig(int FID)
+    {
+        // Slet frivilligen ved at kalde sletmetoden i FrivilligService
+        await FrivilligService.DeleteFrivillig(FID);
+        alleFrivillige = (await FrivilligService.GetAllFrivillige()).ToList(); // Opdater den lokale liste af frivillige efter sletning
+    }
+}

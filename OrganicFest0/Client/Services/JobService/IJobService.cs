@@ -1,7 +1,7 @@
 ﻿using System;
 using OrganicFest.Shared;
 
-namespace OrganicFest0.Client.Services
+namespace OrganicFest.Client.Services
 {
     public interface IJobService
     {

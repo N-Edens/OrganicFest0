@@ -35,29 +35,22 @@
 </EditForm>
 
 @code {
-    private Frivillig frivillig = new Frivillig();
+    private Bruger frivillig = new Bruger();
     private string errorMessage;
 
     private async Task HandleValidSubmit()
     {
-        try
-        {
-            var response = await Http.PostAsJsonAsync<Frivillig>("api/frivillig/login", frivillig);
+        var response = await Http.PostAsJsonAsync<Bruger>("api/frivillig/login", frivillig);
 
-            if (response.IsSuccessStatusCode)
-            {
-                var loggedInUser = await response.Content.ReadFromJsonAsync<Frivillig>();
-                await localStore.SetItemAsync("loggedInUser", loggedInUser);
-                NavManager.NavigateTo("/Frivillig");
-            }
-            else
-            {
-                errorMessage = "Incorrect email or password.";
-            }
-        }
-        catch (Exception ex)
+        if (response.IsSuccessStatusCode)
         {
-            Console.WriteLine($"Fejl: {ex.Message}");
+            var loggedInUser = await response.Content.ReadFromJsonAsync<Bruger>();
+            await localStore.SetItemAsync("loggedInUser", loggedInUser);
+            NavManager.NavigateTo("/Frivillig");
+        }
+        else
+        {
+            errorMessage = "Incorrect email or password.";
         }
     }
 }

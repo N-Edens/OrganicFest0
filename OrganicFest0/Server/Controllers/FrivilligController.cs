@@ -20,13 +20,13 @@ namespace OrganicFest.Server.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Frivillig> GetAllFrivillige()
+        public IEnumerable<Bruger> GetAllFrivillige()
         {
             return fRepo.GetAllFrivillige();
         }
 
         [HttpPost]
-        public void AddFrivillig(Frivillig frivillig)
+        public void AddFrivillig(Bruger frivillig)
         {
             fRepo.AddFrivillig(frivillig);
         }
@@ -40,14 +40,14 @@ namespace OrganicFest.Server.Controllers
 
         [HttpPut]
         [Route("update")]
-        public void UpdateFrivillig(Frivillig frivillig)
+        public void UpdateFrivillig(Bruger frivillig)
         {
             fRepo.UpdateFrivillig(frivillig);
         }
 
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Login([FromBody] Frivillig loginFrivillig)
+        public async Task<IActionResult> Login([FromBody] Bruger loginFrivillig)
         {
 
                 var existingFrivillig = await fRepo.GetFrivilligByEmail(loginFrivillig.Email);

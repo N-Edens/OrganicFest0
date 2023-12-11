@@ -5,11 +5,11 @@ namespace OrganicFest.Server.Repository
 {
     public interface Ifrivillig
     {
-        void AddFrivillig(Frivillig frivillig);
+        void AddFrivillig(Bruger frivillig);
         void DeleteFrivillig(int FID);
-        Frivillig[] GetAllFrivillige();
-        void UpdateFrivillig(Frivillig frivillig);
-        Task<Frivillig> GetFrivilligByEmail(string email);
+        Bruger[] GetAllFrivillige();
+        void UpdateFrivillig(Bruger frivillig);
+        Task<Bruger> GetFrivilligByEmail(string email);
 
 
     }

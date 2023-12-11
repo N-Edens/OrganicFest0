@@ -4,7 +4,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace OrganicFest.Shared
 {
-    public class Frivillig
+    public class Bruger
     {
         [BsonId]  // Angiver at dette er ID-feltet i MongoDB
         [BsonRepresentation(BsonType.ObjectId)]  // Angiver repræsentationen af ID'en i BSON-format
@@ -23,10 +23,6 @@ namespace OrganicFest.Shared
         public string Name { get; set; } = string.Empty;
 
         public int Telefonnummer { get; set; }
-
-        public string Rolle { get; set; } = string.Empty;
-
-       // public string Status { get; set; } = string.Empty;
 
 
     }

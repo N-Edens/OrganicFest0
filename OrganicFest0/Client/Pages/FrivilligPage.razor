@@ -1,20 +1,24 @@
 ﻿@page "/Frivillig"
-@using OrganicFest0.Client.Services
+@using OrganicFest.Client.Services
 @using OrganicFest.Shared
 @inject IVagtService VagtService
 @inject Blazored.LocalStorage.ILocalStorageService localStore
 @inject NavigationManager NavManager
 
 <div class="container-fluid">
-    <h1>Welcome, @frivillig?.Name FID: @frivillig?.FID</h1>
+    <h1>Velkommen, @bruger?.Name</h1>
+    <h3>Du kan her vælge dine vagter</h3>
 
+    <p>Se Profil  <NavLink href="/minprofil">Se din profil her</NavLink></p>
     <div class="mb-3">
-        <button class="btn btn-warning" @onclick="HandleLogout">Logout</button>
+        <button class="btn btn-warning" @onclick="HandleLogout">Log ud</button>
     </div>
+
+
 
     <div class="row">
 
-        <!-- Left Box -->
+        <!-- Venstre Boks -->
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
@@ -30,19 +34,15 @@
                     }
                     else
                     {
-                        @foreach (var vagt in vagtList.Where(v => v.FID == 0 && !mineVagter.Any(mv => mv.Startdate == v.Startdate)))
+                        @foreach (var vagt in vagtList.Where(v => v.FID == 0))
                         {
                             <div class="mb-3">
-                                <strong>VagtID:</strong> @vagt.VID<br />
                                 <strong>Jobnavn:</strong> @vagt.Jobnavn<br />
+                                <strong>Beskrivelse:</strong> @vagt.Description<br />
                                 <strong>StartDate:</strong> @vagt.Startdate<br />
                                 <strong>EndDate:</strong> @vagt.Enddate<br />
                                 <strong>Priority:</strong> <p class="@GetPriorityClass(vagt.Priority)">@GetPriorityText(vagt.Priority)</p> <br />
                                 <button class="btn btn-sm btn-success" @onclick="() => AddVagtToRightBox(vagt)">Tilføj</button>
-                                @if (frivillig.IsCoordinator)
-                                {
-                                    <button class="btn btn-sm btn-danger" @onclick="() => DeleteVagt(vagt)">Slet</button>
-                                }
                             </div>
                             <hr />
                         }
@@ -51,23 +51,22 @@
             </div>
         </div>
 
-        <!-- Right Box -->
+        <!-- Højre Boks -->
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
                     <h4>Mine Vagter</h4>
-                    <!-- Display vagter added to the right box -->
+                    <!-- Vis Vagter som er added til højre boks -->
                     <ul>
-                        @foreach (var vagt in mineVagter.Where(v => v.FID == frivillig.FID))
+                        @foreach (var vagt in mineVagter.Where(v => v.FID == bruger.FID))
                         {
                             <div class="mb-3">
-                                <strong>VagtID:</strong> @vagt.VID<br />
                                 <strong>FrivilligID:</strong> @vagt.FID<br />
                                 <strong>Jobnavn:</strong> @vagt.Jobnavn<br />
+                                <strong>Beksirvelse:</strong> @vagt.Description<br />
                                 <strong>StartDate:</strong> @vagt.Startdate<br />
                                 <strong>EndDate:</strong> @vagt.Enddate<br />
                                 <button class="btn btn-sm btn-success" @onclick="() => FjernVagtFromRightBox(vagt)">Fjern</button>
-                                <button class="btn btn-sm btn-danger" @onclick="() => DeleteVagt(vagt)">Slet</button>
                             </div>
                             <hr />
                         }
@@ -77,70 +76,53 @@
         </div>
     </div>
 </div>
-<p>Se Profil  <NavLink href="/minprofil">Se din profil her</NavLink></p>
 
 
 @code {
     private List<Vagt> vagtList = new List<Vagt>();
     private List<Vagt> mineVagter = new List<Vagt>();
-    private Frivillig frivillig;
+    private Bruger bruger;
+    private string errorMessage;
+
 
     protected override async Task OnInitializedAsync()
     {
-        frivillig = await localStore.GetItemAsync<Frivillig>("loggedInUser");
+        bruger = await localStore.GetItemAsync<Bruger>("loggedInUser");
 
-        if (frivillig == null)
+        if (bruger == null)
             NavManager.NavigateTo("/login");
         else
         {
-            try
-            {
-                // Brug VagtService til at få alle vagter
-                var allVagts = (await VagtService.GetAllVagts());
-                vagtList = allVagts.OrderByDescending(vagt => vagt.Priority).ToList();
-                mineVagter = allVagts.OrderByDescending(vagt => vagt.Startdate).ToList();
-
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Fejl: {ex.Message}");
-            }
+            // Brug VagtService til at få alle vagter
+            var allVagts = (await VagtService.GetAllVagts());
+            vagtList = allVagts.OrderByDescending(vagt => vagt.Priority).ToList();
+            mineVagter = allVagts.OrderByDescending(vagt => vagt.Startdate).ToList();
         }
     }
 
-    // Metode til at håndtere sletning af en vagt
-    private async Task DeleteVagt(Vagt vagt)
-    {
-        try
-        {
-            // Kald VagtService for at slette vagten fra databasen
-            await VagtService.DeleteVagt(vagt.VID);
-
-            // Opdater lokal liste efter sletning
-            vagtList = (await VagtService.GetAllVagts()).OrderByDescending(v => v.Priority).ToList();
-            mineVagter = (await VagtService.GetAllVagts()).OrderByDescending(v => v.Startdate).ToList();
-
-            StateHasChanged();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Fejl ved sletning af vagt: {ex.Message}");
-            // Behandle fejlen efter behov (f.eks. vis en fejlbesked)
-        }
-    }
-
-    // Metode til at håndtere tilføjelse af en vagt til højre boks
     private async Task AddVagtToRightBox(Vagt vagt)
     {
-        // Tilføj den valgte vagt til højre boks
-        vagt.FID = frivillig.FID;
-        await VagtService.UpdateVagt(vagt);
+        var updatedMineVagter = (await VagtService.GetAllVagts()).Where(v => v.FID == bruger.FID).ToList();
+
+        if (!HasOverlap(vagt, updatedMineVagter))
+        {
+            vagt.FID = bruger.FID;
+            await VagtService.UpdateVagt(vagt);
+            errorMessage = null;
+        }
+        else
+        {
+            errorMessage = "Du har allerede vagt denne dag";
+        }
     }
 
-    // Metode til at håndtere fjernelse af en vagt fra højre boks
+    private bool HasOverlap(Vagt newVagt, List<Vagt> existingVagter)
+    {
+        return existingVagter.Any(v => v.Startdate <= newVagt.Enddate && v.Enddate >= newVagt.Startdate);
+    }
+
     private async Task FjernVagtFromRightBox(Vagt vagt)
     {
-        // Tilføj den valgte vagt til venstre boks
         vagt.FID = 0;
         await VagtService.UpdateVagt(vagt);
     }
@@ -161,15 +143,19 @@
         {
             return priority.Value ? "Prioriteret" : "Ikke Prioriteret";
         }
-
         return "Vagt opretet uden om systemet";
 
     }
-
-    // Metode til at håndtere logud
     private void HandleLogout()
     {
         localStore.RemoveItemAsync("loggedInUser");
         NavManager.NavigateTo("/login");
     }
+}
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger" role="alert">
+        @errorMessage
+    </div>
 }

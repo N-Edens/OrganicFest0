@@ -4,7 +4,7 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using OrganicFest.Shared;
 
-namespace OrganicFest0.Client.Services
+namespace OrganicFest.Client.Services
 {
     public class FrivilligService : IFrivilligService
     {
@@ -15,19 +15,24 @@ namespace OrganicFest0.Client.Services
             this.http = http;
         }
 
-        public async Task<IEnumerable<Frivillig>> GetAllFrivillige()
+        public async Task<IEnumerable<Bruger>> GetAllFrivillige()
         {
-            return await http.GetFromJsonAsync<List<Frivillig>>("api/frivillig");
+            return await http.GetFromJsonAsync<List<Bruger>>("api/frivillig");
         }
 
-        public async Task AddFrivillig(Frivillig frivillig)
+        public async Task AddFrivillig(Bruger frivillig)
         {
             await http.PostAsJsonAsync("api/frivillig", frivillig);
         }
 
-        public Task UpdateFrivillig(Frivillig frivillig)
+        public Task UpdateFrivillig(Bruger frivillig)
         {
             return http.PutAsJsonAsync("api/frivillig/update", frivillig);
+        }
+
+        public async Task DeleteFrivillig(int FID)
+        {
+            await http.DeleteAsync($"api/frivillig/delete/{FID}");
         }
     }
 }

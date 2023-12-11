@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using OrganicFest.Shared;
 
-namespace OrganicFest0.Client.Services
+namespace OrganicFest.Client.Services
 {
     public interface IVagtService
     {
@@ -10,7 +10,6 @@ namespace OrganicFest0.Client.Services
         Task AddVagt(Vagt vagt);
         Task UpdateVagt(Vagt vagt);
         Task DeleteVagt(int vagtId);
-        Task ChangeVagt(Vagt vagt);
     }
 }
 

@@ -1,6 +1,6 @@
 ﻿@page "/minprofil"
 @using OrganicFest.Shared
-@using OrganicFest0.Client.Services
+@using OrganicFest.Client.Services
 @inject Blazored.LocalStorage.ILocalStorageService localStore
 @inject NavigationManager NavManager
 @inject IFrivilligService FrivilligService
@@ -18,33 +18,33 @@
         @if (visRedigeringsFormular)
         {
             <!-- Vis en formular til redigering af oplysninger -->
-        <EditForm Model="@frivillig" OnValidSubmit="ChangeProfil">
-            <!-- Valideringskomponenter -->
-            <DataAnnotationsValidator />
-            <ValidationSummary />
+            <EditForm Model="@frivillig" OnValidSubmit="ChangeProfil">
+                <!-- Valideringskomponenter -->
+                <DataAnnotationsValidator />
+                <ValidationSummary />
 
-            <!-- Gruppe for navn -->
-            <div class="form-group">
-                <label class="form-label">Name:</label>
-                <InputText class="form-input" @bind-Value="frivillig.Name" />
-            </div>
+                <!-- Gruppe for navn -->
+                <div class="form-group">
+                    <label class="form-label">Name:</label>
+                    <InputText class="form-input" @bind-Value="frivillig.Name" />
+                </div>
 
-            <!-- Gruppe for email -->
-            <div class="form-group">
-                <label class="form-label">Email:</label>
-                <InputText class="form-input" @bind-Value="frivillig.Email" />
-            </div>
+                <!-- Gruppe for email -->
+                <div class="form-group">
+                    <label class="form-label">Email:</label>
+                    <InputText class="form-input" @bind-Value="frivillig.Email" />
+                </div>
 
-            <!-- Gruppe for telefonnummer -->
-            <div class="form-group">
-                <label class="form-label">Telefonnummer:</label>
-                <InputNumber class="form-input" @bind-Value="frivillig.Telefonnummer" />
-            </div>
+                <!-- Gruppe for telefonnummer -->
+                <div class="form-group">
+                    <label class="form-label">Telefonnummer:</label>
+                    <InputNumber class="form-input" @bind-Value="frivillig.Telefonnummer" />
+                </div>
 
-            <!-- Tilføj andre felter efter behov -->
-            <!-- Gem-knap -->
-            <button class="form-submit" type="submit">Gem</button>
-        </EditForm>
+                <!-- Tilføj andre felter efter behov -->
+                <!-- Gem-knap -->
+                <button class="form-submit" type="submit">Gem</button>
+            </EditForm>
         }
         else
         {
@@ -55,6 +55,8 @@
             <!-- Vis andre oplysninger efter behov -->
         }
 
+        <button class="btn btn-danger btn-sm" @onclick="() => SletProfil(frivillig.FID)">Slet</button>
+
     </div>
 </div>
 
@@ -62,18 +64,15 @@
 
     protected override async Task OnInitializedAsync()
     {
-        frivillig = await localStore.GetItemAsync<Frivillig>("loggedInUser");
+        frivillig = await localStore.GetItemAsync<Bruger>("loggedInUser");
 
         if (frivillig == null)
             NavManager.NavigateTo("/login");
     }
-    // Datamodel for frivillig
-    private Frivillig frivillig = new Frivillig();
+    private Bruger frivillig = new Bruger();
 
-    // Boolean for at styre synligheden af redigeringsformularen
     private bool visRedigeringsFormular = false;
 
-    // Metode til at åbne/redigere formular en
     private void RedigerProfil()
     {
         visRedigeringsFormular = true;
@@ -83,13 +82,18 @@
     private async Task ChangeProfil()
     {
         visRedigeringsFormular = false;
-        await FrivilligService.UpdateFrivillig(frivillig); // Update the profile in the database
+        await FrivilligService.UpdateFrivillig(frivillig); 
 
-        // Save the changes to local storage
         await localStore.SetItemAsync("loggedInUser", frivillig);
     }
 
+    private async Task SletProfil(int FID)
+    {
+        await FrivilligService.DeleteFrivillig(FID);
 
+        localStore.RemoveItemAsync("loggedInUser");
 
+        NavManager.NavigateTo("/login");
+    }
 
 }

@@ -1,6 +1,6 @@
 ﻿@page "/OpretVagt"
 @using OrganicFest.Shared
-@using OrganicFest0.Client.Services
+@using OrganicFest.Client.Services
 @inject Blazored.LocalStorage.ILocalStorageService localStore
 @inject NavigationManager NavManager
 @inject IVagtService VagtService
@@ -55,6 +55,11 @@
         </select>
     </div>
 
+    <div class="col-md-6 mb-3">
+        <label for="antal">Antal</label>
+        <input type="number" id="antal" @bind="vagt.antal" class="form-control" min="1" />
+    </div>
+
     <div class="col-12 mb-3">
         <button type="submit" class="btn btn-primary">Tilføj</button>
     </div>
@@ -70,9 +75,17 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var currentUser = await localStore.GetItemAsync<Frivillig>("loggedInUser");
+        var currentUser = await localStore.GetItemAsync<Bruger>("loggedInUser");
         if (currentUser == null)
             NavManager.NavigateTo("/login");
+
+        // Kontroller om brugeren er koordinator
+        if (!currentUser.IsCoordinator)
+        {
+            // Hvis brugeren ikke er koordinator, kan du omdirigere dem til en anden side, f.eks. "/notauthorized"
+            NavManager.NavigateTo("/frivillig");
+            return;
+        }
 
         busyDisplayStyle = "block";
         jobs = (await JobService.GetAllJobs()).ToList();
@@ -81,14 +94,14 @@
 
     private async Task HandleValidSubmit()
     {
-        try
+        // Opret det angivne antal kopier af vagten
+        for (int i = 0; i < vagt.antal; i++)
         {
             await VagtService.AddVagt(vagt);
-            vagt = new Vagt();
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Fejl: {ex.Message}");
-        }
+
+        // Nulstil vagtobjektet
+        vagt = new Vagt();
     }
+
 }

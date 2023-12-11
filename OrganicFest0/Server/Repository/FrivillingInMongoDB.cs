@@ -11,7 +11,7 @@
         public class FrivilligRepositoryMongoDB : Ifrivillig
         {
             private IMongoClient client;
-            private IMongoCollection<Frivillig> collection;
+            private IMongoCollection<Bruger> collection;
 
             public FrivilligRepositoryMongoDB()
             {
@@ -41,13 +41,13 @@
                 var collectionName = "Frivillige";
 
                 collection = client.GetDatabase(dbName)
-                   .GetCollection<Frivillig>(collectionName);
+                   .GetCollection<Bruger>(collectionName);
 
             }
 
-            public void AddFrivillig(Frivillig frivillig)
+            public void AddFrivillig(Bruger frivillig)
             {
-                var existingFrivillig = collection.Find(Builders<Frivillig>.Filter.Empty)
+                var existingFrivillig = collection.Find(Builders<Bruger>.Filter.Empty)
                     .SortByDescending(r => r.FID)
                     .Limit(1)
                     .FirstOrDefault();
@@ -69,30 +69,33 @@
             public void DeleteFrivillig(int FID)
             {
                 var deleteResult = collection
-                    .DeleteOne(Builders<Frivillig>.Filter.Where(r => r.FID == FID));
+                    .DeleteOne(Builders<Bruger>.Filter.Where(r => r.FID == FID));
             }
 
-            public Frivillig[] GetAllFrivillige()
+            public Bruger[] GetAllFrivillige()
             {
-                return collection.Find(Builders<Frivillig>.Filter.Empty).ToList().ToArray();
+                return collection.Find(Builders<Bruger>.Filter.Empty).ToList().ToArray();
             }
 
-            public void UpdateFrivillig(Frivillig frivillig)
+            public void UpdateFrivillig(Bruger frivillig)
             {
-            var filter = Builders<Frivillig>.Filter.Eq(f => f.FID, frivillig.FID);
-            var update = Builders<Frivillig>.Update
+            var filter = Builders<Bruger>.Filter.Eq(f => f.FID, frivillig.FID);
+            var update = Builders<Bruger>.Update
                 .Set(f => f.Name, frivillig.Name)
                 .Set(f => f.Telefonnummer, frivillig.Telefonnummer)
+                .Set(f => f.IsCoordinator, frivillig.IsCoordinator)
+                .Set(f => f.Password, frivillig.Password)
                 .Set(f => f.Email, frivillig.Email);
+
 
             collection.UpdateOne(filter, update);
         }
 
 
             // Ny metode til at hente en frivillig baseret på e-mail
-            public async Task<Frivillig> GetFrivilligByEmail(string email)
+            public async Task<Bruger> GetFrivilligByEmail(string email)
             {
-                var filter = Builders<Frivillig>.Filter.Eq(x => x.Email, email);
+                var filter = Builders<Bruger>.Filter.Eq(x => x.Email, email);
                 return await collection.Find(filter).FirstOrDefaultAsync();
             }
 

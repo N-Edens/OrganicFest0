@@ -25,6 +25,8 @@ namespace OrganicFest.Shared
 
         // public bool IsDeleted { get; set; } = false;
 
+        public int antal { get; set; } = 1;
+
         public bool? Priority { get; set; }
         [BsonIgnore]
         public string PriorityAsString

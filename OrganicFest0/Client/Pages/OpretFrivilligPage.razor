@@ -1,11 +1,12 @@
 ﻿@page "/OpretFrivillig"
-@using OrganicFest0.Client.Services
+@using OrganicFest.Client.Services
 @inject IFrivilligService FrivilligService
 @using OrganicFest.Shared
 
 <PageTitle>Tilføj Frivillige</PageTitle>
 
-<h1>TILFØJ FRIVILLIGE</h1>
+<h1>Ønsker du at være frivillig til OrganicFest?</h1>
+<h1>Bliv frivillig her</h1>
 
 <!-- Formular til at tilføje en frivillig -->
 <EditForm Model="frivillig" OnValidSubmit="@HandleValidSubmit">
@@ -20,10 +21,12 @@
     <div class="col-md-12 mb-6">
         <label for="Email">Email</label>
         <InputText id="Email" @bind-Value="frivillig.Email" class="form-control" required />
+        <ValidationMessage For="@(() => frivillig.Email)" />
     </div>
     <div class="col-md-12 mb-6">
         <label for="TelefonNummer">Telefon Nummer</label>
-        <InputNumber id="TelefonNummer" @bind-Value="frivillig.Telefonnummer" class="form-control" required />
+        <InputNumber id="TelefonNummer" @bind-Value="frivillig.Telefonnummer" class="form-control" required minlength="8" maxlength="8" />
+        <ValidationMessage For="@(() => frivillig.Telefonnummer)" />
     </div>
     <div class="col-md-12 mb-6">
         <label for="Password">Password</label>
@@ -34,26 +37,38 @@
         <button type="submit" class="btn btn-primary">Tilføj</button>
     </div>
 
+    <p>@validationError</p>
+
     <p>Already registered? <NavLink href="/login">Click here to log in</NavLink></p>
 </EditForm>
 
 @code {
-    Frivillig frivillig = new Frivillig();
+    Bruger frivillig = new Bruger();
+    string validationError;
 
     async Task HandleValidSubmit()
     {
-        try
+        // Validate email format
+        if (!frivillig.Email.Contains("@"))
         {
-            // Sender en POST-anmodning til API'en for at tilføje en frivillig
-            await FrivilligService.AddFrivillig(frivillig);
+            // Set validation error message for email
+            validationError = "Email must contain @ symbol.";
+            return;
+        }
 
-            // Nulstil felterne i formularen efter succesfuld tilføjelse
-            frivillig = new Frivillig();
-        }
-        catch (Exception ex)
+        // Validate phone number length
+        if (frivillig.Telefonnummer.ToString().Length != 8)
         {
-            // Håndter eventuelle undtagelser
-            Console.WriteLine($"Fejl: {ex.Message}");
+            // Set validation error message for phone number
+            validationError = "Phone number must be 8 digits.";
+            return;
         }
+
+        // Sender en POST-anmodning til API'en for at tilføje en frivillig
+        await FrivilligService.AddFrivillig(frivillig);
+
+        // Nulstil felterne i formularen efter succesfuld tilføjelse
+        frivillig = new Bruger();
+        validationError = null; // Reset validation error
     }
 }
