@@ -94,12 +94,19 @@
 
 
 @code {
+    // Objekt for formen der vises modal
     private List<Vagt> vagtList = new List<Vagt>();
+    // Objekt for formen der vises modal
     private List<Vagt> mineVagter = new List<Vagt>();
+    // Objekt, der repræsenterer den aktuelle bruger
     private Bruger bruger;
+    // Style for fejlmeddelse når en vagt Overlapper
     private string errorMessage;
-    private List<Afdeling>? afdelingsnavne = new ();
+    // Objekt for formen der vises modal
+    private List<Afdeling> afdelingsnavne = new ();
 
+    // Sikre at brugeren er logget ind ellers bliver man sendt tilbage til LoginPage
+    // gør at listerne bliver sorteret efter priority og Start Dato
     protected override async Task OnInitializedAsync()
     {
         bruger = await localStore.GetItemAsync<Bruger>("loggedInUser");
@@ -116,6 +123,8 @@
         }
     }
 
+    // Gør at vagt for tilkoblet brugers FID, udfra hvem der er logget ind
+    // og sikre at du ikke tager flere vagter på samme dag, hvis ens giver errormessage
     private async Task AddVagtToRightBox(Vagt vagt)
     {
         var LoggedInUserVagter = (await VagtService.GetAllVagts()).Where(v => v.FID == bruger.FID).ToList();
@@ -132,11 +141,13 @@
         }
     }
 
+    // En boolean der holder styr på om der er overlap på en LoggedInUsers vagter og den nye vagt de forsøger at tage
     private bool HasOverlap(Vagt newVagt, List<Vagt> LoggedInUserVagter)
     {
         return LoggedInUserVagter.Any(v => v.Startdate <= newVagt.Enddate && v.Enddate >= newVagt.Startdate);
     }
 
+    // gør at man ved at bruge dropdown menuen 
     private async Task FilterByJobName(ChangeEventArgs e)
     {
         var x = e.Value.ToString();
