@@ -30,14 +30,14 @@
     <None Remove="Pages\" />
     <None Remove="Services\" />
     <None Remove="Services\VagtService\" />
-    <None Remove="Services\FrivilligService\" />
-    <None Remove="Services\JobService\" />
+    <None Remove="Services\BrugerService\" />
+    <None Remove="Services\AfdelingsService\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Pages\" />
     <Folder Include="Services\" />
     <Folder Include="Services\VagtService\" />
-    <Folder Include="Services\FrivilligService\" />
-    <Folder Include="Services\JobService\" />
+    <Folder Include="Services\BrugerService\" />
+    <Folder Include="Services\AfdelingsService\" />
   </ItemGroup>
 </Project>

@@ -12,9 +12,9 @@ namespace OrganicFest.Server.Controllers
     [Route("api/frivillig")]
     public class FrivilligController : ControllerBase
     {
-        private Ifrivillig fRepo;
+        private IBruger fRepo;
 
-        public FrivilligController(Ifrivillig repo)
+        public FrivilligController(IBruger repo)
         {
             fRepo = repo;
         }
@@ -22,27 +22,27 @@ namespace OrganicFest.Server.Controllers
         [HttpGet]
         public IEnumerable<Bruger> GetAllFrivillige()
         {
-            return fRepo.GetAllFrivillige();
+            return fRepo.GetAllBruger();
         }
 
         [HttpPost]
-        public void AddFrivillig(Bruger frivillig)
+        public void AddFrivillig(Bruger bruger)
         {
-            fRepo.AddFrivillig(frivillig);
+            fRepo.AddBruger(bruger);
         }
 
         [HttpDelete]
         [Route("delete/{FID:int}")]
         public void DeleteFrivillig(int FID)
         {
-            fRepo.DeleteFrivillig(FID);
+            fRepo.DeleteBruger(FID);
         }
 
         [HttpPut]
         [Route("update")]
-        public void UpdateFrivillig(Bruger frivillig)
+        public void UpdateFrivillig(Bruger bruger)
         {
-            fRepo.UpdateFrivillig(frivillig);
+            fRepo.UpdateBruger(bruger);
         }
 
         [HttpPost]
@@ -50,18 +50,18 @@ namespace OrganicFest.Server.Controllers
         public async Task<IActionResult> Login([FromBody] Bruger loginFrivillig)
         {
 
-                var existingFrivillig = await fRepo.GetFrivilligByEmail(loginFrivillig.Email);
+            var existingFrivillig = await fRepo.GetBrugerByEmail(loginFrivillig.Email);
 
-                if (existingFrivillig != null && existingFrivillig.Password == loginFrivillig.Password)
-                {
-                    // Login successful
-                    return Ok(existingFrivillig);
-                }
-                else
-                {
-                    // Login failed
-                    return BadRequest("Incorrect email or password.");
-                }
+            if (existingFrivillig != null && existingFrivillig.Password == loginFrivillig.Password)
+            {
+                // Login successful
+                return Ok(existingFrivillig);
+            }
+            else
+            {
+                // Login failed
+                return BadRequest("Incorrect email or password.");
+            }
         }
 
     }

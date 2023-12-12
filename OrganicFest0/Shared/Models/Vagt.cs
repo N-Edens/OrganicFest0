@@ -10,12 +10,12 @@ namespace OrganicFest.Shared
         public string Id { get; set; } = "";
 
         [BsonElement("FID")]
-        public int FID { get; set; }  // Add this property to store Frivillig ID
+        public int FID { get; set; } 
 
         public int VID { get; set; }
 
-        [BsonElement("Jobnavn")]
-        public string Jobnavn { get; set; } = "";
+        [BsonElement("Afdelingsnavn")]
+        public string Afdelingsnavn { get; set; } = "";
 
         public string Description { get; set; } = string.Empty;
 

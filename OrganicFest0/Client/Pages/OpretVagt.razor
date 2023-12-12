@@ -4,7 +4,7 @@
 @inject Blazored.LocalStorage.ILocalStorageService localStore
 @inject NavigationManager NavManager
 @inject IVagtService VagtService
-@inject IJobService JobService
+@inject IAfdelingService AfdelingService
 
 <PageTitle>Tilføj Vagter</PageTitle>
 
@@ -15,18 +15,18 @@
     <ValidationSummary />
 
     <div>
-        <label for="Jobnavn" class="bold-label"> Job :</label>
-        <select @bind="vagt.Jobnavn" class="form-control">
+        <label for="Afdelingsnavn" class="bold-label"> Job :</label>
+        <select @bind="vagt.Afdelingsnavn" class="form-control">
             <option value=""> ---- Vælg job her ----- </option>
-            @if (jobs == null)
+            @if (afdelinger == null)
             {
                 <p><em>Loading...</em></p>
             }
             else
             {
-                @foreach (var job in jobs)
+                @foreach (var afdeling in afdelinger)
                 {
-                    <option value="@job.Jobnavn">@job.Jobnavn</option>
+                    <option value="@afdeling.Afdelingsnavn">@afdeling.Afdelingsnavn</option>
                 }
             }
         </select>
@@ -71,36 +71,28 @@
 @code {
     private string busyDisplayStyle = "none";
     private Vagt vagt = new Vagt();
-    private List<Job> jobs = new List<Job>();
+    private List<Afdeling> afdelinger = new List<Afdeling>();
 
     protected override async Task OnInitializedAsync()
     {
-        var currentUser = await localStore.GetItemAsync<Bruger>("loggedInUser");
-        if (currentUser == null)
+        var bruger = await localStore.GetItemAsync<Bruger>("loggedInUser");
+        if (bruger == null)
             NavManager.NavigateTo("/login");
 
-        // Kontroller om brugeren er koordinator
-        if (!currentUser.IsCoordinator)
+        if (!bruger.IsCoordinator)
         {
-            // Hvis brugeren ikke er koordinator, kan du omdirigere dem til en anden side, f.eks. "/notauthorized"
             NavManager.NavigateTo("/frivillig");
             return;
         }
-
-        busyDisplayStyle = "block";
-        jobs = (await JobService.GetAllJobs()).ToList();
-        busyDisplayStyle = "none";
+        afdelinger = (await AfdelingService.GetAllAfdelinger()).ToList();
     }
 
     private async Task HandleValidSubmit()
     {
-        // Opret det angivne antal kopier af vagten
         for (int i = 0; i < vagt.antal; i++)
         {
             await VagtService.AddVagt(vagt);
         }
-
-        // Nulstil vagtobjektet
         vagt = new Vagt();
     }
 

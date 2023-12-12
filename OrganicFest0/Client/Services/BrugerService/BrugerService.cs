@@ -6,31 +6,31 @@ using OrganicFest.Shared;
 
 namespace OrganicFest.Client.Services
 {
-    public class FrivilligService : IFrivilligService
+    public class BrugerService : IBrugerService
     {
         private readonly HttpClient http;
 
-        public FrivilligService(HttpClient http)
+        public BrugerService(HttpClient http)
         {
             this.http = http;
         }
 
-        public async Task<IEnumerable<Bruger>> GetAllFrivillige()
+        public async Task<IEnumerable<Bruger>> GetAllBruger()
         {
             return await http.GetFromJsonAsync<List<Bruger>>("api/frivillig");
         }
 
-        public async Task AddFrivillig(Bruger frivillig)
+        public async Task AddBruger(Bruger bruger)
         {
-            await http.PostAsJsonAsync("api/frivillig", frivillig);
+            await http.PostAsJsonAsync("api/frivillig", bruger);
         }
 
-        public Task UpdateFrivillig(Bruger frivillig)
+        public Task UpdateBruger(Bruger bruger)
         {
-            return http.PutAsJsonAsync("api/frivillig/update", frivillig);
+            return http.PutAsJsonAsync("api/frivillig/update", bruger);
         }
 
-        public async Task DeleteFrivillig(int FID)
+        public async Task DeleteBruger(int FID)
         {
             await http.DeleteAsync($"api/frivillig/delete/{FID}");
         }

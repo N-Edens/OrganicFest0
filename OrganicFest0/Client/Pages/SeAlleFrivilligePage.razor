@@ -3,7 +3,7 @@
 @using OrganicFest.Client.Services
 @inject Blazored.LocalStorage.ILocalStorageService localStore
 @inject NavigationManager NavManager
-@inject IFrivilligService FrivilligService
+@inject IBrugerService BrugerService
 
 <PageTitle>Se Frivillige</PageTitle>
 
@@ -34,12 +34,11 @@
         <label for="IsCoordinator">Koordinator</label>
         <InputCheckbox id="IsCoordinator" @bind-Value="frivillig.IsCoordinator" />
     </div>
-    <!-- Gem-knap -->
+
     <button class="form-submit" type="submit">Gem</button>
 </EditForm>
 }
 
-<!-- Tabel til at vise alle frivillige -->
 <table class="table">
     <thead>
         <tr>
@@ -53,7 +52,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var frivillig in filtreredeFrivillige)
+        @foreach (var frivillig in alleFrivillige)
         {
             <tr>
                 <td>@frivillig.FID</td>
@@ -74,7 +73,6 @@
 @code {
     private Bruger frivillig = new Bruger();
     private List<Bruger> alleFrivillige = new List<Bruger>();
-    private List<Bruger> filtreredeFrivillige = new List<Bruger>();
     private bool visRedigeringsFormular = false;
 
     protected override async Task OnInitializedAsync()
@@ -83,38 +81,31 @@
         if (currentUser == null)
             NavManager.NavigateTo("/login");
 
-        // Kontroller om brugeren er koordinator
         if (!currentUser.IsCoordinator)
         {
-            // Hvis brugeren ikke er koordinator, kan du omdirigere dem til en anden side, f.eks. "/notauthorized"
             NavManager.NavigateTo("/frivillig");
             return;
         }
 
-        // Hent alle frivillige fra service ved komponentinitialisering
-        alleFrivillige = (await FrivilligService.GetAllFrivillige()).ToList();
-        filtreredeFrivillige = alleFrivillige;
+        alleFrivillige = (await BrugerService.GetAllBruger()).ToList();
     }
 
-
-
-    private void RedigerFrivillig(Bruger selectedFrivillig)
+    private void RedigerFrivillig(Bruger ValgteBruger)
     {
-        frivillig = selectedFrivillig;
+        frivillig = ValgteBruger;
         visRedigeringsFormular = true;
     }
 
     private async Task ChangeFrivillig()
     {
         visRedigeringsFormular = false;
-        await FrivilligService.UpdateFrivillig(frivillig); // Update the profile in the database
-        alleFrivillige = (await FrivilligService.GetAllFrivillige()).ToList(); // Opdater den lokale liste af frivillige efter ændring
+        await BrugerService.UpdateBruger(frivillig);
+        await localStore.SetItemAsync("loggedInUser", frivillig);
     }
 
     private async Task SletFrivillig(int FID)
     {
-        // Slet frivilligen ved at kalde sletmetoden i FrivilligService
-        await FrivilligService.DeleteFrivillig(FID);
-        alleFrivillige = (await FrivilligService.GetAllFrivillige()).ToList(); // Opdater den lokale liste af frivillige efter sletning
+        await BrugerService.DeleteBruger(FID);
+        alleFrivillige = (await BrugerService.GetAllBruger()).ToList();
     }
 }

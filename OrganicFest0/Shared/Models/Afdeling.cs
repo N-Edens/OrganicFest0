@@ -4,16 +4,13 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace OrganicFest.Shared
 {
-    public class Job
+    public class Afdeling
     {
         [BsonId]  // Angiver at dette er ID-feltet i MongoDB
         [BsonRepresentation(BsonType.ObjectId)]  // Angiver repræsentationen af ID'en i BSON-format
         public string Id { get; set; } = string.Empty;  // Unik identifikator for string
 
-        public string Jobnavn { get; set; } = "";
-
-        [BsonElement("FID")]
-        public int FID { get; set; }
+        public string Afdelingsnavn { get; set; } = "";
     }
 }
 

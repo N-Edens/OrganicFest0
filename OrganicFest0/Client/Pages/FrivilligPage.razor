@@ -2,6 +2,7 @@
 @using OrganicFest.Client.Services
 @using OrganicFest.Shared
 @inject IVagtService VagtService
+@inject IAfdelingService AfdelingService
 @inject Blazored.LocalStorage.ILocalStorageService localStore
 @inject NavigationManager NavManager
 
@@ -10,15 +11,31 @@
     <h3>Du kan her vælge dine vagter</h3>
 
     <p>Se Profil  <NavLink href="/minprofil">Se din profil her</NavLink></p>
+
     <div class="mb-3">
         <button class="btn btn-warning" @onclick="HandleLogout">Log ud</button>
     </div>
 
+    <div class="mb-3">
+        <label for="afdelingsfilter" class="form-label">Vælg Afdeling:</label>
+        <select id="afdelingsfilter" @onchange="(e) => FilterByJobName(e)" class="form-select" style="width: 300px;">
+            <option value="">Sorter efter Afdelingsnavn</option>
+            @foreach (var afdeling in afdelingsnavne)
+            {
+                <option value="@afdeling.Afdelingsnavn">@afdeling.Afdelingsnavn</option>
+            }
+        </select>
+    </div>
 
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="alert alert-danger" role="alert">
+            @errorMessage
+        </div>
+    }
 
     <div class="row">
 
-        <!-- Venstre Boks -->
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
@@ -30,14 +47,14 @@
                     }
                     else if (vagtList.Count == 0)
                     {
-                        <p>Ingen vagter fundet.</p>
+                        <p>Ingen vagter tilgængelige.</p>
                     }
                     else
                     {
                         @foreach (var vagt in vagtList.Where(v => v.FID == 0))
                         {
                             <div class="mb-3">
-                                <strong>Jobnavn:</strong> @vagt.Jobnavn<br />
+                                <strong>Afdelingsnavn:</strong> @vagt.Afdelingsnavn<br />
                                 <strong>Beskrivelse:</strong> @vagt.Description<br />
                                 <strong>StartDate:</strong> @vagt.Startdate<br />
                                 <strong>EndDate:</strong> @vagt.Enddate<br />
@@ -51,18 +68,16 @@
             </div>
         </div>
 
-        <!-- Højre Boks -->
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
                     <h4>Mine Vagter</h4>
-                    <!-- Vis Vagter som er added til højre boks -->
                     <ul>
-                        @foreach (var vagt in mineVagter.Where(v => v.FID == bruger.FID))
+                        @foreach (var vagt in vagtList.Where(v => v.FID == bruger.FID))
                         {
                             <div class="mb-3">
                                 <strong>FrivilligID:</strong> @vagt.FID<br />
-                                <strong>Jobnavn:</strong> @vagt.Jobnavn<br />
+                                <strong>Afdelingsnavn:</strong> @vagt.Afdelingsnavn<br />
                                 <strong>Beksirvelse:</strong> @vagt.Description<br />
                                 <strong>StartDate:</strong> @vagt.Startdate<br />
                                 <strong>EndDate:</strong> @vagt.Enddate<br />
@@ -83,28 +98,29 @@
     private List<Vagt> mineVagter = new List<Vagt>();
     private Bruger bruger;
     private string errorMessage;
-
+    private List<Afdeling>? afdelingsnavne = new ();
 
     protected override async Task OnInitializedAsync()
     {
         bruger = await localStore.GetItemAsync<Bruger>("loggedInUser");
+        afdelingsnavne = (await AfdelingService.GetAllAfdelinger()).ToList();
 
         if (bruger == null)
             NavManager.NavigateTo("/login");
         else
         {
-            // Brug VagtService til at få alle vagter
             var allVagts = (await VagtService.GetAllVagts());
             vagtList = allVagts.OrderByDescending(vagt => vagt.Priority).ToList();
             mineVagter = allVagts.OrderByDescending(vagt => vagt.Startdate).ToList();
+
         }
     }
 
     private async Task AddVagtToRightBox(Vagt vagt)
     {
-        var updatedMineVagter = (await VagtService.GetAllVagts()).Where(v => v.FID == bruger.FID).ToList();
+        var LoggedInUserVagter = (await VagtService.GetAllVagts()).Where(v => v.FID == bruger.FID).ToList();
 
-        if (!HasOverlap(vagt, updatedMineVagter))
+        if (!HasOverlap(vagt, LoggedInUserVagter))
         {
             vagt.FID = bruger.FID;
             await VagtService.UpdateVagt(vagt);
@@ -116,9 +132,27 @@
         }
     }
 
-    private bool HasOverlap(Vagt newVagt, List<Vagt> existingVagter)
+    private bool HasOverlap(Vagt newVagt, List<Vagt> LoggedInUserVagter)
     {
-        return existingVagter.Any(v => v.Startdate <= newVagt.Enddate && v.Enddate >= newVagt.Startdate);
+        return LoggedInUserVagter.Any(v => v.Startdate <= newVagt.Enddate && v.Enddate >= newVagt.Startdate);
+    }
+
+    private async Task FilterByJobName(ChangeEventArgs e)
+    {
+        var x = e.Value.ToString();
+        if (!string.IsNullOrEmpty(x))
+        {
+            vagtList = (await VagtService.GetAllVagts())
+                            .Where(v => v.Afdelingsnavn == x)
+                            .OrderByDescending(v => v.Priority)
+                            .ToList();
+        }
+        else
+        {
+            vagtList = (await VagtService.GetAllVagts())
+                            .OrderByDescending(v => v.Priority)
+                            .ToList();
+        }
     }
 
     private async Task FjernVagtFromRightBox(Vagt vagt)
@@ -149,13 +183,6 @@
     private void HandleLogout()
     {
         localStore.RemoveItemAsync("loggedInUser");
-        NavManager.NavigateTo("/login");
+        NavManager.NavigateTo("/login", true);
     }
-}
-
-@if (!string.IsNullOrEmpty(errorMessage))
-{
-    <div class="alert alert-danger" role="alert">
-        @errorMessage
-    </div>
 }

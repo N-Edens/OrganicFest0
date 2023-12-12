@@ -3,9 +3,9 @@ using OrganicFest.Shared;
 
 namespace OrganicFest.Client.Services
 {
-    public interface IJobService
+    public interface IAfdelingService
     {
-        Task<IEnumerable<Job>> GetAllJobs();
+        Task<IEnumerable<Afdeling>> GetAllAfdelinger();
     }
 }
 

@@ -17,8 +17,8 @@ namespace client
             builder.Services.AddRazorPages();
 
             builder.Services.AddSingleton<IVagt, VagtRepositoryMongoDB>();
-            builder.Services.AddSingleton<Ifrivillig, FrivilligRepositoryMongoDB>();
-            builder.Services.AddSingleton<IJob, JobRepositoryMongoDB>();
+            builder.Services.AddSingleton<IBruger, BrugerRepositoryMongoDB>();
+            builder.Services.AddSingleton<IAfdeling, AfdelingRepositoryMongoDB>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

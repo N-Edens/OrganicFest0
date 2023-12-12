@@ -6,18 +6,18 @@ using OrganicFest.Shared;
 
 namespace OrganicFest.Client.Services
 {
-    public class JobService : IJobService
+    public class AfdelingService : IAfdelingService
     {
         private readonly HttpClient http;
 
-        public JobService(HttpClient http)
+        public AfdelingService(HttpClient http)
         {
             this.http = http;
         }
 
-        public async Task<IEnumerable<Job>> GetAllJobs()
+        public async Task<IEnumerable<Afdeling>> GetAllAfdelinger()
         {
-            return await http.GetFromJsonAsync<List<Job>>("api/job");
+            return await http.GetFromJsonAsync<List<Afdeling>>("api/afdeling");
         }
     }
 }

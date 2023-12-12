@@ -15,8 +15,6 @@ namespace OrganicFest.Server.Repository
         {
             var mongoUri = $"mongodb+srv://mathiashvid:Boost1234@organic.rv52jkh.mongodb.net/";
 
-
-
             try
             {
                 client = new MongoClient(mongoUri);
@@ -56,7 +54,6 @@ namespace OrganicFest.Server.Repository
             }
             else
             {
-                // Hvis samlingen er tom, start fra FID 1 eller en anden passende startværdi
                 vagt.VID = 1;
             }
 
@@ -77,13 +74,14 @@ namespace OrganicFest.Server.Repository
         public void UpdateVagt(Vagt vagt)
         {
             var updateFID = Builders<Vagt>.Update.Set(v => v.FID, vagt.FID);
-            var updateJobnavn = Builders<Vagt>.Update
-                .Set(v => v.Jobnavn, vagt.Jobnavn)
+            var updateAfdelingsnavn = Builders<Vagt>.Update
+                .Set(v => v.Afdelingsnavn, vagt.Afdelingsnavn)
                 .Set(v => v.Description, vagt.Description)
                 .Set(v => v.Startdate, vagt.Startdate)
+                .Set(v => v.Priority, vagt.Priority)
                 .Set(v => v.Enddate, vagt.Enddate);
             collection.UpdateOne(v => v.VID == vagt.VID, updateFID);
-            collection.UpdateOne(v => v.VID == vagt.VID, updateJobnavn);
+            collection.UpdateOne(v => v.VID == vagt.VID, updateAfdelingsnavn);
         }
 
 

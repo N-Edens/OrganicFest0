@@ -1,4 +1,7 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@inject Blazored.LocalStorage.ILocalStorageService localStore
+@using OrganicFest.Shared;
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">client</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -9,6 +12,7 @@
 
 <div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
     <nav class="flex-column">
+        @if (bruger == null){ 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="Login">
                 <span class="oi oi-list-rich" aria-hidden="true"></span> Login
@@ -19,11 +23,17 @@
                 <span class="oi oi-plus" aria-hidden="true"></span> Opret Frivillig
             </NavLink>
         </div>
+        }
+        @if (bruger != null)
+            {
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="Frivillig">
                 <span class="oi oi-plus" aria-hidden="true"></span> Frivillig
             </NavLink>
         </div>
+            }
+        @if (bruger != null && bruger.IsCoordinator)
+            {
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="OpretVagt">
                 <span class="oi oi-list-rich" aria-hidden="true"></span> Opret Vagt
@@ -34,7 +44,7 @@
                 <span class="oi oi-list-rich" aria-hidden="true"></span> Se Frivillige
             </NavLink>
         </div>
-
+            }
     </nav>
 </div>
 
@@ -46,5 +56,13 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    private Bruger? bruger;
+
+    protected override async Task OnInitializedAsync()
+    {
+        bruger = await localStore.GetItemAsync<Bruger>("loggedInUser");
+     
     }
 }

@@ -11,20 +11,20 @@ using OrganicFest.Shared;
 namespace OrganicFest.Server.Controllers
 {
     [ApiController]
-    [Route("api/job")]
+    [Route("api/afdeling")]
     public class JobController : ControllerBase
     {
-        private IJob jRepo;
+        private IAfdeling jRepo;
 
-        public JobController(IJob repo)
+        public JobController(IAfdeling repo)
         {
             jRepo = repo;
         }
 
         [HttpGet]
-        public IEnumerable<Job> GetAllJobs()
+        public IEnumerable<Afdeling> GetAllJobs()
         {
-            return jRepo.GetallJobs();
+            return jRepo.GetAllAfdelinger();
         }
 
     }

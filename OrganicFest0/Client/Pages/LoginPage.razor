@@ -6,18 +6,18 @@
 
 <h1>Login</h1>
 
-<EditForm Model="frivillig" OnValidSubmit="HandleValidSubmit">
+<EditForm Model="bruger" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
     <div class="mb-3">
         <label for="Email">Email:</label>
-        <InputText id="Email" @bind-Value="frivillig.Email" class="form-control" required />
+        <InputText id="Email" @bind-Value="bruger.Email" class="form-control" required />
     </div>
 
     <div class="mb-3">
         <label for="Password">Password:</label>
-        <InputText id="Password" @bind-Value="frivillig.Password" type="password" class="form-control" required />
+        <InputText id="Password" @bind-Value="bruger.Password" type="password" class="form-control" required />
     </div>
 
     <div class="mb-3">
@@ -35,18 +35,18 @@
 </EditForm>
 
 @code {
-    private Bruger frivillig = new Bruger();
+    private Bruger bruger = new Bruger();
     private string errorMessage;
 
     private async Task HandleValidSubmit()
     {
-        var response = await Http.PostAsJsonAsync<Bruger>("api/frivillig/login", frivillig);
+        var response = await Http.PostAsJsonAsync<Bruger>("api/frivillig/login", bruger);
 
         if (response.IsSuccessStatusCode)
         {
             var loggedInUser = await response.Content.ReadFromJsonAsync<Bruger>();
             await localStore.SetItemAsync("loggedInUser", loggedInUser);
-            NavManager.NavigateTo("/Frivillig");
+            NavManager.NavigateTo("/Frivillig", true);
         }
         else
         {

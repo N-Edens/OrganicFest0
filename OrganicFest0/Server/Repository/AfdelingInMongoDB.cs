@@ -1,16 +1,15 @@
 ﻿using System;
 using MongoDB.Driver;
 using OrganicFest.Shared;
-using OrganicFest.Server.Repository;
 
 namespace OrganicFest.Server.Repository
 {
-    public class JobRepositoryMongoDB : IJob
+    public class AfdelingRepositoryMongoDB : IAfdeling
     {
         private IMongoClient client;
-        private IMongoCollection<Job> collection;
+        private IMongoCollection<Afdeling> collection;
 
-        public JobRepositoryMongoDB()
+        public AfdelingRepositoryMongoDB()
         {
             var mongoUri = $"mongodb+srv://mathiashvid:Boost1234@organic.rv52jkh.mongodb.net/";
 
@@ -38,14 +37,14 @@ namespace OrganicFest.Server.Repository
             var collectionName = "Afdeling";
 
             collection = client.GetDatabase(dbName)
-               .GetCollection<Job>(collectionName);
+               .GetCollection<Afdeling>(collectionName);
 
         }
 
 
-        public Job[] GetallJobs()
+        public Afdeling[] GetAllAfdelinger()
         {
-            return collection.Find(Builders<Job>.Filter.Empty).ToList().ToArray();
+            return collection.Find(Builders<Afdeling>.Filter.Empty).ToList().ToArray();
         }
     }
 }

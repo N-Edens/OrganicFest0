@@ -1,6 +1,6 @@
 ﻿@page "/OpretFrivillig"
 @using OrganicFest.Client.Services
-@inject IFrivilligService FrivilligService
+@inject IBrugerService BrugerService
 @using OrganicFest.Shared
 
 <PageTitle>Tilføj Frivillige</PageTitle>
@@ -8,29 +8,26 @@
 <h1>Ønsker du at være frivillig til OrganicFest?</h1>
 <h1>Bliv frivillig her</h1>
 
-<!-- Formular til at tilføje en frivillig -->
-<EditForm Model="frivillig" OnValidSubmit="@HandleValidSubmit">
+<EditForm Model="bruger" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
-    <!-- Input-felter til at indtaste navn, email, telefonnummer, og password -->
     <div class="col-md-12 mb-6">
         <label for="Navn">Navn</label>
-        <InputText id="Navn" @bind-Value="frivillig.Name" class="form-control" required />
+        <InputText id="Navn" @bind-Value="bruger.Name" class="form-control" required />
     </div>
     <div class="col-md-12 mb-6">
         <label for="Email">Email</label>
-        <InputText id="Email" @bind-Value="frivillig.Email" class="form-control" required />
-        <ValidationMessage For="@(() => frivillig.Email)" />
+        <InputText id="Email" @bind-Value="bruger.Email" class="form-control" required />
     </div>
     <div class="col-md-12 mb-6">
         <label for="TelefonNummer">Telefon Nummer</label>
-        <InputNumber id="TelefonNummer" @bind-Value="frivillig.Telefonnummer" class="form-control" required minlength="8" maxlength="8" />
-        <ValidationMessage For="@(() => frivillig.Telefonnummer)" />
+        <InputNumber id="TelefonNummer" @bind-Value="bruger.Telefonnummer" class="form-control" required minlength="8" maxlength="8" />
+        <ValidationMessage For="@(() => bruger.Telefonnummer)" />
     </div>
     <div class="col-md-12 mb-6">
         <label for="Password">Password</label>
-        <InputText id="Password" @bind-Value="frivillig.Password" class="form-control" required />
+        <InputText id="Password" @bind-Value="bruger.Password" class="form-control" required />
     </div>
 
     <div class="col-12 mb-3">
@@ -43,32 +40,20 @@
 </EditForm>
 
 @code {
-    Bruger frivillig = new Bruger();
+    Bruger bruger = new Bruger();
     string validationError;
 
     async Task HandleValidSubmit()
     {
-        // Validate email format
-        if (!frivillig.Email.Contains("@"))
+        if (bruger.Telefonnummer.ToString().Length != 8)
         {
-            // Set validation error message for email
-            validationError = "Email must contain @ symbol.";
-            return;
-        }
-
-        // Validate phone number length
-        if (frivillig.Telefonnummer.ToString().Length != 8)
-        {
-            // Set validation error message for phone number
             validationError = "Phone number must be 8 digits.";
             return;
         }
 
-        // Sender en POST-anmodning til API'en for at tilføje en frivillig
-        await FrivilligService.AddFrivillig(frivillig);
+        await BrugerService.AddBruger(bruger);
 
-        // Nulstil felterne i formularen efter succesfuld tilføjelse
-        frivillig = new Bruger();
-        validationError = null; // Reset validation error
+        bruger = new Bruger();
+        validationError = null; 
     }
 }

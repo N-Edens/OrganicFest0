@@ -3,59 +3,46 @@
 @using OrganicFest.Client.Services
 @inject Blazored.LocalStorage.ILocalStorageService localStore
 @inject NavigationManager NavManager
-@inject IFrivilligService FrivilligService
+@inject IBrugerService BrugerService
 
-<!-- En container til formularen -->
 <div class="form-container">
     <h3>Min Profil</h3>
 
-    <!-- Knap til at åbne/redigere formularen -->
-    <button class="form-submit" @onclick="RedigerProfil">Rediger Profil</button>
+    <button class="form-submit" @onclick="RedigerProfil">Rediger din profil</button>
 
-    <!-- Container til at vise formularen -->
     <div style="margin-top: 10px;">
-        <!-- Tilføjet lidt mellemrum mellem knap og formular -->
         @if (visRedigeringsFormular)
         {
-            <!-- Vis en formular til redigering af oplysninger -->
-            <EditForm Model="@frivillig" OnValidSubmit="ChangeProfil">
-                <!-- Valideringskomponenter -->
+            <EditForm Model="@bruger" OnValidSubmit="ChangeProfil">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
 
-                <!-- Gruppe for navn -->
                 <div class="form-group">
                     <label class="form-label">Name:</label>
-                    <InputText class="form-input" @bind-Value="frivillig.Name" />
+                    <InputText class="form-input" @bind-Value="bruger.Name" />
                 </div>
 
-                <!-- Gruppe for email -->
                 <div class="form-group">
                     <label class="form-label">Email:</label>
-                    <InputText class="form-input" @bind-Value="frivillig.Email" />
+                    <InputText class="form-input" @bind-Value="bruger.Email" />
                 </div>
 
-                <!-- Gruppe for telefonnummer -->
                 <div class="form-group">
                     <label class="form-label">Telefonnummer:</label>
-                    <InputNumber class="form-input" @bind-Value="frivillig.Telefonnummer" />
+                    <InputNumber class="form-input" @bind-Value="bruger.Telefonnummer" />
                 </div>
 
-                <!-- Tilføj andre felter efter behov -->
-                <!-- Gem-knap -->
                 <button class="form-submit" type="submit">Gem</button>
             </EditForm>
         }
         else
         {
-            <!-- Vis frivilligoplysninger -->
-            <p><strong>Name:</strong> @frivillig.Name</p>
-            <p><strong>Email:</strong> @frivillig.Email</p>
-            <p><strong>Telefonnummer:</strong> @frivillig.Telefonnummer</p>
-            <!-- Vis andre oplysninger efter behov -->
+            <p><strong>Name:</strong> @bruger.Name</p>
+            <p><strong>Email:</strong> @bruger.Email</p>
+            <p><strong>Telefonnummer:</strong> @bruger.Telefonnummer</p>
         }
 
-        <button class="btn btn-danger btn-sm" @onclick="() => SletProfil(frivillig.FID)">Slet</button>
+        <button class="btn btn-danger btn-sm" @onclick="() => SletProfil(bruger.FID)">Slet</button>
 
     </div>
 </div>
@@ -64,12 +51,12 @@
 
     protected override async Task OnInitializedAsync()
     {
-        frivillig = await localStore.GetItemAsync<Bruger>("loggedInUser");
+        bruger = await localStore.GetItemAsync<Bruger>("loggedInUser");
 
-        if (frivillig == null)
+        if (bruger == null)
             NavManager.NavigateTo("/login");
     }
-    private Bruger frivillig = new Bruger();
+    private Bruger bruger = new Bruger();
 
     private bool visRedigeringsFormular = false;
 
@@ -82,14 +69,14 @@
     private async Task ChangeProfil()
     {
         visRedigeringsFormular = false;
-        await FrivilligService.UpdateFrivillig(frivillig); 
+        await BrugerService.UpdateBruger(bruger); 
 
-        await localStore.SetItemAsync("loggedInUser", frivillig);
+        await localStore.SetItemAsync("loggedInUser", bruger);
     }
 
     private async Task SletProfil(int FID)
     {
-        await FrivilligService.DeleteFrivillig(FID);
+        await BrugerService.DeleteBruger(FID);
 
         localStore.RemoveItemAsync("loggedInUser");
 
