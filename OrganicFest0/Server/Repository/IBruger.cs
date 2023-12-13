@@ -9,7 +9,7 @@ namespace OrganicFest.Server.Repository
         void DeleteBruger(int FID);
         Bruger[] GetAllBruger();
         void UpdateBruger(Bruger bruger);
-        Task<Bruger> GetBrugerByEmail(string email);
+        Task<Bruger> AuthenticateUser(string email, string password); 
 
 
     }

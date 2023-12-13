@@ -38,7 +38,7 @@ namespace OrganicFest.Server.Repository
             // If they don't already exist, the driver and Atlas will create them
             // automatically when you first write data.
             var dbName = "OrganicFestival";
-            var collectionName = "Frivillige";
+            var collectionName = "Bruger";
 
             collection = client.GetDatabase(dbName)
                .GetCollection<Bruger>(collectionName);
@@ -92,9 +92,11 @@ namespace OrganicFest.Server.Repository
         }
 
 
-        public async Task<Bruger> GetBrugerByEmail(string email)
+        public async Task<Bruger> AuthenticateUser(string email, string password)
         {
-            var filter = Builders<Bruger>.Filter.Eq(x => x.Email, email);
+            var filter = Builders<Bruger>.Filter.Eq(x => x.Email, email) &
+                         Builders<Bruger>.Filter.Eq(x => x.Password, password);
+
             return await collection.Find(filter).FirstOrDefaultAsync();
         }
 

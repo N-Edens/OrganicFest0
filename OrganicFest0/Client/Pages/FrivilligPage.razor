@@ -94,15 +94,15 @@
 
 
 @code {
-    // Objekt for formen der vises modal
+    // Deklaration og initialisering af en liste (container) af Vagt-objekter
     private List<Vagt> vagtList = new List<Vagt>();
-    // Objekt for formen der vises modal
+    // Deklaration og initialisering af en liste (container) af Vagt-objekter
     private List<Vagt> mineVagter = new List<Vagt>();
     // Objekt, der repræsenterer den aktuelle bruger
     private Bruger bruger;
     // Style for fejlmeddelse når en vagt Overlapper
     private string errorMessage;
-    // Objekt for formen der vises modal
+    // Deklaration og initialisering af en liste (container) af Afdeling-objekter
     private List<Afdeling> afdelingsnavne = new ();
 
     // Sikre at brugeren er logget ind ellers bliver man sendt tilbage til LoginPage
@@ -141,13 +141,15 @@
         }
     }
 
-    // En boolean der holder styr på om der er overlap på en LoggedInUsers vagter og den nye vagt de forsøger at tage
+    // En boolean der holder styr på om der er overlap på en LoggedInUsers vagter og den nye vagt de forsøger at tage.
+    // Se AddVagtToRightBox
     private bool HasOverlap(Vagt newVagt, List<Vagt> LoggedInUserVagter)
     {
         return LoggedInUserVagter.Any(v => v.Startdate <= newVagt.Enddate && v.Enddate >= newVagt.Startdate);
     }
 
-    // gør at man ved at bruge dropdown menuen 
+    // gør at man ved at vælge på DropdownMenuen "FilterByJobName"
+    // kan vælge hvilken afdeling man kun vil se vagter
     private async Task FilterByJobName(ChangeEventArgs e)
     {
         var x = e.Value.ToString();
@@ -166,6 +168,7 @@
         }
     }
 
+    // Når knappen fjern klikkes bliver vagt.Fid sat til at være 0 igen
     private async Task FjernVagtFromRightBox(Vagt vagt)
     {
         vagt.FID = 0;
@@ -191,6 +194,7 @@
         return "Vagt opretet uden om systemet";
 
     }
+    // Logger User ud og sender en ud på /login
     private void HandleLogout()
     {
         localStore.RemoveItemAsync("loggedInUser");

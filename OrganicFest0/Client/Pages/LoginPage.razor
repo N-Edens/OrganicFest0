@@ -35,9 +35,12 @@
 </EditForm>
 
 @code {
+    // Deklaration og initialisering af en liste (container) af Bruger-objekter
     private Bruger bruger = new Bruger();
+    // Style for fejlmeddelse når en vagt Overlapper. se HandleValidSumbit
     private string errorMessage;
 
+    // Hvis brugeren findes logges brugeren ind og kommer ind på FrivilligPage ellers forkert email eller password
     private async Task HandleValidSubmit()
     {
         var response = await Http.PostAsJsonAsync<Bruger>("api/frivillig/login", bruger);
@@ -50,7 +53,7 @@
         }
         else
         {
-            errorMessage = "Incorrect email or password.";
+            errorMessage = "Forkert email eller password.";
         }
     }
 }

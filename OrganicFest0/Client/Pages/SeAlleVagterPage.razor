@@ -99,16 +99,22 @@
 </table>
 
 @code {
-    List<Vagt> alleVagter = new List<Vagt>(); 
+    // Objekt For formen der vises Modal
+    List<Vagt> alleVagter = new List<Vagt>();
 
+    //
     bool VisTilgængeligeVagter = false;
 
-    string valgtSortering = "Afdelingsnavn"; 
+    //Style for hvad der vises i form af sotering - Se mere FilterOgSorterVagter
+    string valgtSortering = "Afdelingsnavn";
 
-    List<Vagt> filtreredeVagter => FilterOgSorterVagter(); 
+    //
+    List<Vagt> filtreredeVagter => FilterOgSorterVagter();
 
+    // Objekt For formen der vises Modal
     private Bruger frivillig = new Bruger();
 
+    // Objekt For formen der vises Modal
     private List<Afdeling> afdelinger = new List<Afdeling>();
 
     protected override async Task OnInitializedAsync()
@@ -157,7 +163,7 @@
 
         return filtrerede;
     }
-
+    // Objekt For formen der vises Modal
     private Vagt vagt = new Vagt();
 
     private bool visRedigeringsFormular = false;

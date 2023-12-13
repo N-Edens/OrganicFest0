@@ -69,10 +69,13 @@
 </EditForm>
 
 @code {
-    private string busyDisplayStyle = "none";
+    // Deklaration og initialisering af en liste (container) af Vagt-objekter
     private Vagt vagt = new Vagt();
+    // Deklaration og initialisering af en liste (container) af Afdeling-objekter
     private List<Afdeling> afdelinger = new List<Afdeling>();
 
+    // Gør at man skal være logget ind ellers bliver man sendt tilbage til LoginPage
+    // Og man skal være koordinator
     protected override async Task OnInitializedAsync()
     {
         var bruger = await localStore.GetItemAsync<Bruger>("loggedInUser");
@@ -86,7 +89,7 @@
         }
         afdelinger = (await AfdelingService.GetAllAfdelinger()).ToList();
     }
-
+    // Her laves en iteretion af vagter og gøres at det er muligt at oprette flere af den samme vagt
     private async Task HandleValidSubmit()
     {
         for (int i = 0; i < vagt.antal; i++)

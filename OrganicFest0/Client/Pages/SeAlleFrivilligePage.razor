@@ -71,8 +71,11 @@
 </table>
 
 @code {
+    // Deklaration og initialisering af en liste (container) af Bruger-objekter
     private Bruger frivillig = new Bruger();
+    // Deklaration og initialisering af en liste (container) af Bruger-objekter
     private List<Bruger> alleFrivillige = new List<Bruger>();
+    // Boolean der gør det muligt at kunne redigere. Se RedigerFrivillig og ChangeFrivillig.
     private bool visRedigeringsFormular = false;
 
     protected override async Task OnInitializedAsync()
@@ -90,12 +93,15 @@
         alleFrivillige = (await BrugerService.GetAllBruger()).ToList();
     }
 
+    // Her åbnes VisRedgeringsFormular og gør det muligt at redigere i den frivillig Profil
+    // som er valgt udfra RedigerFrivillig knappen
     private void RedigerFrivillig(Bruger ValgteBruger)
     {
         frivillig = ValgteBruger;
         visRedigeringsFormular = true;
     }
 
+    // Her lukkes VisRedigeringsFormular og gemmer data i både LocalStorage og på Databasen
     private async Task ChangeFrivillig()
     {
         visRedigeringsFormular = false;
@@ -103,6 +109,7 @@
         await localStore.SetItemAsync("loggedInUser", frivillig);
     }
 
+    // Sletter profil og sender det tilbage til LoginPage
     private async Task SletFrivillig(int FID)
     {
         await BrugerService.DeleteBruger(FID);

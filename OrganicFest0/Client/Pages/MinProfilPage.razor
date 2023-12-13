@@ -48,7 +48,7 @@
 </div>
 
 @code {
-
+    // tjekker om bruger logget ind ellers sendes tilbage til LoginPage
     protected override async Task OnInitializedAsync()
     {
         bruger = await localStore.GetItemAsync<Bruger>("loggedInUser");
@@ -56,24 +56,29 @@
         if (bruger == null)
             NavManager.NavigateTo("/login");
     }
+    // Deklaration og initialisering af en liste (container) af Bruger-objekter
     private Bruger bruger = new Bruger();
 
+    // Boolean der gør det muligt at kunne redigere. Se RedigerProfil og ChangeProfil.
     private bool visRedigeringsFormular = false;
 
+    // Åbner visRedigeringsFormular op og gør det muligt at redigere i din profil
     private void RedigerProfil()
     {
         visRedigeringsFormular = true;
 
     }
 
+    // Her lukkes visRedigeringsFormular og ændre i både LocalStorage og på Databasen
     private async Task ChangeProfil()
     {
         visRedigeringsFormular = false;
-        await BrugerService.UpdateBruger(bruger); 
+        await BrugerService.UpdateBruger(bruger);
 
         await localStore.SetItemAsync("loggedInUser", bruger);
     }
 
+    // Sletter profil og sender det tilbage til LoginPage
     private async Task SletProfil(int FID)
     {
         await BrugerService.DeleteBruger(FID);

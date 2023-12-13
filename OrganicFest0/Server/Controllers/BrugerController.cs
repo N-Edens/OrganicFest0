@@ -49,13 +49,12 @@ namespace OrganicFest.Server.Controllers
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] Bruger loginFrivillig)
         {
+            var authenticatedUser = await fRepo.AuthenticateUser(loginFrivillig.Email, loginFrivillig.Password);
 
-            var existingFrivillig = await fRepo.GetBrugerByEmail(loginFrivillig.Email);
-
-            if (existingFrivillig != null && existingFrivillig.Password == loginFrivillig.Password)
+            if (authenticatedUser != null)
             {
                 // Login successful
-                return Ok(existingFrivillig);
+                return Ok(authenticatedUser);
             }
             else
             {
