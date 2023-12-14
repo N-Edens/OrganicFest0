@@ -18,7 +18,7 @@ namespace OrganicFest.Client.Services
 
         public async Task<IEnumerable<Vagt>> GetAllVagts()
         {
-            return await http.GetFromJsonAsync<List<Vagt>>("api/vagt");
+            return await http.GetFromJsonAsync<List<Vagt>>("api/vagt/vagt");
         }
 
         public async Task AddVagt(Vagt vagt)
@@ -35,7 +35,6 @@ namespace OrganicFest.Client.Services
         {
             await http.DeleteAsync($"api/vagt/delete/{vagtId}");
         }
-
 
     }
 }

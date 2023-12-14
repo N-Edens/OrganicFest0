@@ -1,0 +1,13 @@
+﻿@page "/"
+@inject NavigationManager navigationmanager
+
+<PageTitle>Login</PageTitle>
+@code
+{
+    protected override async Task OnInitializedAsync()
+    {
+        navigationmanager.NavigateTo("/Login");
+    }
+}
+
+

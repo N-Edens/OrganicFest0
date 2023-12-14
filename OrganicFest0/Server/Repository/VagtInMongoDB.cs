@@ -76,14 +76,13 @@ namespace OrganicFest.Server.Repository
             var updateFID = Builders<Vagt>.Update.Set(v => v.FID, vagt.FID);
             var updateAfdelingsnavn = Builders<Vagt>.Update
                 .Set(v => v.Afdelingsnavn, vagt.Afdelingsnavn)
-                .Set(v => v.Description, vagt.Description)
+                .Set(v => v.Beskrivelse, vagt.Beskrivelse)
                 .Set(v => v.Startdate, vagt.Startdate)
                 .Set(v => v.Priority, vagt.Priority)
                 .Set(v => v.Enddate, vagt.Enddate);
             collection.UpdateOne(v => v.VID == vagt.VID, updateFID);
             collection.UpdateOne(v => v.VID == vagt.VID, updateAfdelingsnavn);
         }
-
 
     }
 }

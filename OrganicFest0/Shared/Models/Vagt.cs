@@ -17,13 +17,12 @@ namespace OrganicFest.Shared
         [BsonElement("Afdelingsnavn")]
         public string Afdelingsnavn { get; set; } = "";
 
-        public string Description { get; set; } = string.Empty;
+        public string Beskrivelse { get; set; } = string.Empty;
 
         public DateTime? Startdate { get; set; } = null;
 
         public DateTime? Enddate { get; set; } = null;
 
-        // public bool IsDeleted { get; set; } = false;
 
         public int antal { get; set; } = 1;
 

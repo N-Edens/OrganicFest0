@@ -12,44 +12,44 @@ namespace OrganicFest.Server.Controllers
     [Route("api/frivillig")]
     public class FrivilligController : ControllerBase
     {
-        private IBruger fRepo;
+        private IBruger bRepo;
 
         public FrivilligController(IBruger repo)
         {
-            fRepo = repo;
+            bRepo = repo;
         }
 
         [HttpGet]
-        public IEnumerable<Bruger> GetAllFrivillige()
+        public IEnumerable<Bruger> GetAllBruger()
         {
-            return fRepo.GetAllBruger();
+            return bRepo.GetAllBruger();
         }
 
         [HttpPost]
-        public void AddFrivillig(Bruger bruger)
+        public void GetBruger(Bruger bruger)
         {
-            fRepo.AddBruger(bruger);
+            bRepo.AddBruger(bruger);
         }
 
         [HttpDelete]
         [Route("delete/{FID:int}")]
-        public void DeleteFrivillig(int FID)
+        public void DeleteBruger(int FID)
         {
-            fRepo.DeleteBruger(FID);
+            bRepo.DeleteBruger(FID);
         }
 
         [HttpPut]
         [Route("update")]
-        public void UpdateFrivillig(Bruger bruger)
+        public void UpdateBruger(Bruger bruger)
         {
-            fRepo.UpdateBruger(bruger);
+            bRepo.UpdateBruger(bruger);
         }
 
         [HttpPost]
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] Bruger loginFrivillig)
         {
-            var authenticatedUser = await fRepo.AuthenticateUser(loginFrivillig.Email, loginFrivillig.Password);
+            var authenticatedUser = await bRepo.AuthenticateUser(loginFrivillig.Email, loginFrivillig.Password);
 
             if (authenticatedUser != null)
             {

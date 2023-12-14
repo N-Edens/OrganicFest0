@@ -19,6 +19,7 @@ namespace OrganicFest.Server.Controllers
         }
 
         [HttpGet]
+        [Route("vagt")]
         public IEnumerable<Vagt> GetAllVagt()
         {
             return vRepo.GetAllVagts();
@@ -43,6 +44,5 @@ namespace OrganicFest.Server.Controllers
         {
             vRepo.UpdateVagt(vagt);
         }
-
     }
 }

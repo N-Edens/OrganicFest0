@@ -106,7 +106,6 @@
     {
         visRedigeringsFormular = false;
         await BrugerService.UpdateBruger(frivillig);
-        await localStore.SetItemAsync("loggedInUser", frivillig);
     }
 
     // Sletter profil og sender det tilbage til LoginPage

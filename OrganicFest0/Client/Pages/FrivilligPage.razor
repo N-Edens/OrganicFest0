@@ -55,7 +55,7 @@
                         {
                             <div class="mb-3">
                                 <strong>Afdelingsnavn:</strong> @vagt.Afdelingsnavn<br />
-                                <strong>Beskrivelse:</strong> @vagt.Description<br />
+                                <strong>Beskrivelse:</strong> @vagt.Beskrivelse<br />
                                 <strong>StartDate:</strong> @vagt.Startdate<br />
                                 <strong>EndDate:</strong> @vagt.Enddate<br />
                                 <strong>Priority:</strong> <p class="@GetPriorityClass(vagt.Priority)">@GetPriorityText(vagt.Priority)</p> <br />
@@ -78,7 +78,7 @@
                             <div class="mb-3">
                                 <strong>FrivilligID:</strong> @vagt.FID<br />
                                 <strong>Afdelingsnavn:</strong> @vagt.Afdelingsnavn<br />
-                                <strong>Beksirvelse:</strong> @vagt.Description<br />
+                                <strong>Beksirvelse:</strong> @vagt.Beskrivelse<br />
                                 <strong>StartDate:</strong> @vagt.Startdate<br />
                                 <strong>EndDate:</strong> @vagt.Enddate<br />
                                 <button class="btn btn-sm btn-success" @onclick="() => FjernVagtFromRightBox(vagt)">Fjern</button>
