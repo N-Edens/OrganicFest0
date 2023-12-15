@@ -23,7 +23,6 @@ namespace OrganicFest.Shared
 
         public DateTime? Enddate { get; set; } = null;
 
-
         public int antal { get; set; } = 1;
 
         public bool? Priority { get; set; }
@@ -39,7 +38,6 @@ namespace OrganicFest.Shared
             };
         }
 
-        // Constructor
         public Vagt()
         {
             Startdate = DateTime.Now;
