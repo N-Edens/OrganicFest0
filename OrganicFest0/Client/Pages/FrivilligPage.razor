@@ -73,7 +73,7 @@
                 <div class="card-body">
                     <h4>Mine Vagter</h4>
                     <ul>
-                        @foreach (var vagt in vagtList.Where(v => v.FID == bruger.FID))
+                        @foreach (var vagt in mineVagter.Where(v => v.FID == bruger.FID))
                         {
                             <div class="mb-3">
                                 <strong>FrivilligID:</strong> @vagt.FID<br />
@@ -118,7 +118,7 @@
         {
             var allVagts = (await VagtService.GetAllVagts());
             vagtList = allVagts.OrderByDescending(vagt => vagt.Priority).ToList();
-            mineVagter = allVagts.OrderByDescending(vagt => vagt.Startdate).ToList();
+            mineVagter = allVagts.OrderBy(vagt => vagt.Startdate).ToList();
 
         }
     }
