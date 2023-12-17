@@ -41,7 +41,7 @@ namespace OrganicFest.Server.Repository
 
         }
 
-
+        // henter alle afdelinger
         public Afdeling[] GetAllAfdelinger()
         {
             return collection.Find(Builders<Afdeling>.Filter.Empty).ToList().ToArray();

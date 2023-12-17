@@ -25,11 +25,13 @@ namespace OrganicFest.Server.Controllers
             return vRepo.GetAllVagts();
         }
 
+        // Gør at en vagt kan tilføjes på beskrivelse, afdeling osv.
         [HttpPost]
         public void AddVagt(Vagt vagt)
         {
             vRepo.AddVagt(vagt);
         }
+        // Henter kaldeet til at slette en Bruger ud fra VID (Vagt ID).
 
         [HttpDelete]
         [Route("delete/{VID:int}")]
@@ -38,6 +40,7 @@ namespace OrganicFest.Server.Controllers
             vRepo.DeleteVagt(VID);
         }
 
+        // Henter kaldet for at gøre det muligt at kunne opdatere i vagt
         [HttpPut]
         [Route("update")]
         public void UpdateVagt(Vagt vagt)

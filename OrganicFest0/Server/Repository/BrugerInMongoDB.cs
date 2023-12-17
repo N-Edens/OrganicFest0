@@ -36,7 +36,7 @@ namespace OrganicFest.Server.Repository
                .GetCollection<Bruger>(collectionName);
 
         }
-
+        // gør at når man opretter ny bruger får de et nyt frivillig ID, som er en højere end den højeste, hvis ingen brugere findes vil den starte på 1
         public void AddBruger(Bruger bruger)
         {
             var existingFrivillig = collection.Find(Builders<Bruger>.Filter.Empty)
@@ -50,14 +50,13 @@ namespace OrganicFest.Server.Repository
             }
             else
             {
-                // Hvis samlingen er tom, start fra FID 1 eller en anden passende startværdi
                 bruger.FID = 1;
             }
 
             collection.InsertOne(bruger);
         }
 
-
+        // fjerner bruger hvor bruger.FID = FID.
         public void DeleteBruger(int FID)
         {
             var deleteResult = collection
@@ -70,6 +69,8 @@ namespace OrganicFest.Server.Repository
             return collection.Find(Builders<Bruger>.Filter.Empty).ToList().ToArray();
         }
 
+        // Opdatere bruger med FID
+        // Opdatere navn, telefonnummer, Coordinator rolle, password og email hvis man redigere deet.
         public void UpdateBruger(Bruger bruger)
         {
             var filter = Builders<Bruger>.Filter.Eq(f => f.FID, bruger.FID);
@@ -84,7 +85,7 @@ namespace OrganicFest.Server.Repository
             collection.UpdateOne(filter, update);
         }
 
-
+        // Finder bruger der har email og password der matcher i databasen, for hvad der skrives på LoginPage
         public async Task<Bruger> AuthenticateUser(string email, string password)
         {
             var filter = Builders<Bruger>.Filter.Eq(x => x.Email, email) &

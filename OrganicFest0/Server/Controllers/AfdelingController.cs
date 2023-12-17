@@ -21,6 +21,7 @@ namespace OrganicFest.Server.Controllers
             jRepo = repo;
         }
 
+
         [HttpGet]
         public IEnumerable<Afdeling> GetAllAfdelinger()
         {
