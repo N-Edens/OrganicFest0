@@ -48,7 +48,7 @@ namespace OrganicFest.Server.Controllers
             bRepo.UpdateBruger(bruger);
         }
 
-        // Kald AuthenticateUser-metoden for at se om bruger findes. 
+        // Kald AuthenticateUser-metoden for at se om bruger findes. Dette bruges til når man skal holde øjne med om bruger logger ind.
         [HttpPost]
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] Bruger loginFrivillig)

@@ -33,7 +33,7 @@ namespace OrganicFest.Server.Repository
 
         }
 
-        // gør at når man opretter ny vagt får de et nyt Vagt ID, som er en højere end den højeste, hvis ingen brugere findes vil den starte på 1
+        // Gør at når man opretter ny vagt får de et nyt Vagt ID, som er 1 højere end den højeste, hvis ingen brugere findes vil den starte på 1
         public void AddVagt(Vagt vagt)
         {
             var existingVagt = collection.Find(Builders<Vagt>.Filter.Empty)
@@ -52,7 +52,7 @@ namespace OrganicFest.Server.Repository
 
             collection.InsertOne(vagt);
         }
-        // fjerner bruger hvor vagt.VID = VID
+        // Fjerner Vagt hvor vagt.VID = VID
         public void DeleteVagt(int VID)
         {
             var deleteResult = collection
