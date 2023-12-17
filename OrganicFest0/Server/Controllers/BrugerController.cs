@@ -25,12 +25,14 @@ namespace OrganicFest.Server.Controllers
             return bRepo.GetAllBruger();
         }
 
+        // Gør at en bruger kan tilføjes på navn, email osv.
         [HttpPost]
-        public void GetBruger(Bruger bruger)
+        public void AddBruger(Bruger bruger)
         {
             bRepo.AddBruger(bruger);
         }
 
+        // Henter kaldeet til at slette en Bruger ud fra FID (Frivillig ID).
         [HttpDelete]
         [Route("delete/{FID:int}")]
         public void DeleteBruger(int FID)
@@ -38,6 +40,7 @@ namespace OrganicFest.Server.Controllers
             bRepo.DeleteBruger(FID);
         }
 
+        // Henter kaldet for at gøre det muligt at kunne opdatere i bruger
         [HttpPut]
         [Route("update")]
         public void UpdateBruger(Bruger bruger)
@@ -45,6 +48,7 @@ namespace OrganicFest.Server.Controllers
             bRepo.UpdateBruger(bruger);
         }
 
+        // Kald AuthenticateUser-metoden for at se om bruger findes. 
         [HttpPost]
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] Bruger loginFrivillig)
@@ -53,12 +57,10 @@ namespace OrganicFest.Server.Controllers
 
             if (authenticatedUser != null)
             {
-                // Login successful
                 return Ok(authenticatedUser);
             }
             else
             {
-                // Login failed
                 return BadRequest("Incorrect email or password.");
             }
         }

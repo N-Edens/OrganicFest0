@@ -110,7 +110,6 @@
     private List<Afdeling> afdelingsnavne = new ();
 
     // Sender alle vagter ud på siden når man åbner den, og sikre at bruger er logget ind
-    // Sortere MineVagter ud fra StartDate og sortere vagtList udfra Priority
     protected override async Task OnInitializedAsync()
     {
         bruger = await localStore.GetItemAsync<Bruger>("loggedInUser");

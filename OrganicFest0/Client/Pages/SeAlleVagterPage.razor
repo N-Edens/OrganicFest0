@@ -99,24 +99,25 @@
 </table>
 
 @code {
-    // Objekt For formen der vises Modal
+    // Objekt der viser alle vagter
     List<Vagt> alleVagter = new List<Vagt>();
 
-    //
+    // Boolean for at vise om vagter tilgængelige via checkpoint
     bool VisTilgængeligeVagter = false;
 
     //Style for hvad der vises i form af sotering - Se mere FilterOgSorterVagter
     string valgtSortering = "Afdelingsnavn";
 
-    //
+    // Objekt for at filtrere og sortere vagter
     List<Vagt> filtreredeVagter => FilterOgSorterVagter();
 
-    // Objekt For formen der vises Modal
+    // Objekt for at kunne lave frivilligfilter
     private Bruger frivillig = new Bruger();
 
-    // Objekt For formen der vises Modal
+    // Objekt For at kunne få alle afldelinger
     private List<Afdeling> afdelinger = new List<Afdeling>();
 
+    // Gør at når man går til siden sikres det at man er logget ind og viser liste over allevagter.
     protected override async Task OnInitializedAsync()
     {
         alleVagter = (await VagtService.GetAllVagts()).ToList();
@@ -135,6 +136,8 @@
 
     }
 
+    //Gør at man kan filtere vagter sådan man kun se dem med FID værdi 0
+    // gør at man kan sortere vagterl
     private List<Vagt> FilterOgSorterVagter()
     {
         List<Vagt> filtrerede;
@@ -163,17 +166,19 @@
 
         return filtrerede;
     }
-    // Objekt For formen der vises Modal
+    // Objekt for at vise detaljer om en specifik vagt
     private Vagt vagt = new Vagt();
 
+    // Boolean for at styre synligheden af redigeringsformularen
     private bool visRedigeringsFormular = false;
 
+    // Gør man kan redigere i en vagt.
     private void RedigerVagt(Vagt selectedVagt)
     {
         vagt = selectedVagt;
         visRedigeringsFormular = true;
     }
-
+    // gemmer ændringerne der er lavet i vagten.
     private async Task ChangeVagt()
     {
         visRedigeringsFormular = false;
