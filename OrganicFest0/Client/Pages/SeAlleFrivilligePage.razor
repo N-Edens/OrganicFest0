@@ -5,34 +5,32 @@
 @inject NavigationManager NavManager
 @inject IBrugerService BrugerService
 
-<PageTitle>Se Frivillige</PageTitle>
+<PageTitle>Se Bruger</PageTitle>
 
-<h1>Se frivillige</h1>
+<h1>Se Bruger</h1>
 
 @if (visRedigeringsFormular)
 {
-    <!-- Vis en formular til redigering af frivillig -->
-<EditForm Model="@frivillig" OnValidSubmit="ChangeFrivillig">
-    <!-- Valideringskomponenter -->
+<EditForm Model="@bruger" OnValidSubmit="ChangeBruger">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
     <div class="col-md-12 mb-6">
         <label for="Navn">Navn</label>
-        <InputText id="Navn" @bind-Value="frivillig.Name" class="form-control"  />
+        <InputText id="Navn" @bind-Value="bruger.Name" class="form-control"  />
     </div>
     <div class="col-md-12 mb-6">
         <label for="Email">Email</label>
-        <InputText id="Email" @bind-Value="frivillig.Email" class="form-control"  />
+        <InputText id="Email" @bind-Value="bruger.Email" class="form-control"  />
     </div>
     <div class="col-md-12 mb-6">
         <label for="Telefonnummer">Telefonnummer</label>
-        <InputNumber class="form-input" @bind-Value="frivillig.Telefonnummer" />
+        <InputNumber class="form-input" @bind-Value="bruger.Telefonnummer" />
     </div>
 
     <div class="col-md-12 mb-6">
         <label for="IsCoordinator">Koordinator</label>
-        <InputCheckbox id="IsCoordinator" @bind-Value="frivillig.IsCoordinator" />
+        <InputCheckbox id="IsCoordinator" @bind-Value="bruger.IsCoordinator" />
     </div>
 
     <button class="form-submit" type="submit">Gem</button>
@@ -52,18 +50,18 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var frivillig in alleFrivillige)
+        @foreach (var bruger in AlleBruger)
         {
             <tr>
-                <td>@frivillig.FID</td>
-                <td>@frivillig.Name</td>
-                <td>@frivillig.Email</td>
-                <td>@frivillig.Telefonnummer</td>
-                <td>@frivillig.IsCoordinator</td>
-                <td>@frivillig.Password</td>
+                <td>@bruger.FID</td>
+                <td>@bruger.Name</td>
+                <td>@bruger.Email</td>
+                <td>@bruger.Telefonnummer</td>
+                <td>@bruger.IsCoordinator</td>
+                <td>@bruger.Password</td>
                 <td>
-                    <button class="form-submit" @onclick="() => RedigerFrivillig(frivillig)">Rediger Profil</button>
-                    <button class="btn btn-danger btn-sm" @onclick="() => SletFrivillig(frivillig.FID)">Slet</button>
+                    <button class="form-submit" @onclick="() => RedigerBruger(bruger)">Rediger Profil</button>
+                    <button class="btn btn-danger btn-sm" @onclick="() => SletBruger(bruger.FID)">Slet</button>
                 </td>
             </tr>
         }
@@ -71,11 +69,11 @@
 </table>
 
 @code {
-    // Deklaration og initialisering af en liste (container) af Bruger-objekter
-    private Bruger frivillig = new Bruger();
-    // Deklaration og initialisering af en liste (container) af Bruger-objekter
-    private List<Bruger> alleFrivillige = new List<Bruger>();
-    // Boolean der gør det muligt at kunne redigere. Se RedigerFrivillig og ChangeFrivillig.
+    // Objekt for at lave Crud på Bruger
+    private Bruger bruger = new Bruger();
+    // Objekt af en liste som henter alle brugere se OnInitializedAsync
+    private List<Bruger> AlleBruger = new List<Bruger>();
+    // Boolean der gør det muligt at kunne redigere. Se RedigerBruger og ChangeBruger.
     private bool visRedigeringsFormular = false;
 
     protected override async Task OnInitializedAsync()
@@ -90,28 +88,27 @@
             return;
         }
 
-        alleFrivillige = (await BrugerService.GetAllBruger()).ToList();
+        AlleBruger = (await BrugerService.GetAllBruger()).ToList();
     }
 
-    // Her åbnes VisRedgeringsFormular og gør det muligt at redigere i den frivillig Profil
-    // som er valgt udfra RedigerFrivillig knappen
-    private void RedigerFrivillig(Bruger ValgteBruger)
+    // Her åbnes VisRedgeringsFormular og gør det muligt at redigere i den Bruger Profil
+    // som er valgt udfra RedigerBruger knappen
+    private void RedigerBruger(Bruger ValgteBruger)
     {
-        frivillig = ValgteBruger;
+        bruger = ValgteBruger;
         visRedigeringsFormular = true;
     }
 
     // Her lukkes VisRedigeringsFormular og gemmer data i både LocalStorage og på Databasen
-    private async Task ChangeFrivillig()
+    private async Task ChangeBruger()
     {
         visRedigeringsFormular = false;
-        await BrugerService.UpdateBruger(frivillig);
+        await BrugerService.UpdateBruger(bruger);
     }
 
-    // Sletter profil og sender det tilbage til LoginPage
-    private async Task SletFrivillig(int FID)
+    private async Task SletBruger(int FID)
     {
         await BrugerService.DeleteBruger(FID);
-        alleFrivillige = (await BrugerService.GetAllBruger()).ToList();
+        AlleBruger = (await BrugerService.GetAllBruger()).ToList();
     }
 }

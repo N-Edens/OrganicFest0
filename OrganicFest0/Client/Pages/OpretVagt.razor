@@ -15,9 +15,9 @@
     <ValidationSummary />
 
     <div>
-        <label for="Afdelingsnavn" class="bold-label"> Job :</label>
+        <label for="Afdelingsnavn" class="bold-label"> Afdeling :</label>
         <select @bind="vagt.Afdelingsnavn" class="form-control">
-            <option value=""> ---- Vælg job her ----- </option>
+            <option value=""> ---- Vælg afdeling her ----- </option>
             @if (afdelinger == null)
             {
                 <p><em>Loading...</em></p>
@@ -69,13 +69,14 @@
 </EditForm>
 
 @code {
-    // Deklaration og initialisering af en liste (container) af Vagt-objekter
+    //Objekt for at kunne oprette ny vagt
     private Vagt vagt = new Vagt();
-    // Deklaration og initialisering af en liste (container) af Afdeling-objekter
+
+    // Objekt af en liste for afdelinger som bruges til at lave en dropdownmenu
     private List<Afdeling> afdelinger = new List<Afdeling>();
 
     // Gør at man skal være logget ind ellers bliver man sendt tilbage til LoginPage
-    // Og man skal være koordinator
+    // Og man skal være koordinator og henter alle afdelinger.
     protected override async Task OnInitializedAsync()
     {
         var bruger = await localStore.GetItemAsync<Bruger>("loggedInUser");

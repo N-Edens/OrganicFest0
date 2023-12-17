@@ -22,7 +22,7 @@ namespace OrganicFest.Server.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Afdeling> GetAllJobs()
+        public IEnumerable<Afdeling> GetAllAfdelinger()
         {
             return jRepo.GetAllAfdelinger();
         }

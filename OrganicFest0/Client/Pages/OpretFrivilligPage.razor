@@ -40,14 +40,14 @@
 </EditForm>
 
 @code {
-    // Deklaration og initialisering af en liste (container) af Bruger-objekter
+    // Objekt som bruges til at lave ny bruger - Se HandleValidSubmit
     Bruger bruger = new Bruger();
 
-    // Fejlmeddelelse, der vises, hvis der opstår en valideringsfejl
+    // style for valdiationerror til telefonnummer.
     string validationError;
 
     // Gør at telefonnummeret skal være 8 tal ellers fejlmeddelse
-    // Opretter ny bruger
+    // Opretter ny bruger hvis krav er opfyldt
     async Task HandleValidSubmit()
     {
         if (bruger.Telefonnummer.ToString().Length != 8)

@@ -56,7 +56,7 @@
         if (bruger == null)
             NavManager.NavigateTo("/login");
     }
-    // Deklaration og initialisering af en liste (container) af Bruger-objekter
+    // Objekt til OnInitializedAsync
     private Bruger bruger = new Bruger();
 
     // Boolean der gør det muligt at kunne redigere. Se RedigerProfil og ChangeProfil.
@@ -78,7 +78,6 @@
         await localStore.SetItemAsync("loggedInUser", bruger);
     }
 
-    // Sletter profil og sender det tilbage til LoginPage
     private async Task SletProfil(int FID)
     {
         await BrugerService.DeleteBruger(FID);

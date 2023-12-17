@@ -35,9 +35,10 @@
 </EditForm>
 
 @code {
-    // Deklaration og initialisering af en liste (container) af Bruger-objekter
+    //Objekt for HandleValidSubmit som logger brugere ind
     private Bruger bruger = new Bruger();
-    // Style for fejlmeddelse når en vagt Overlapper. se HandleValidSumbit
+
+    // Style for fejlmeddelse når en bruger ikke findes. se HandleValidSumbit
     private string errorMessage;
 
     // Hvis brugeren findes logges brugeren ind og kommer ind på FrivilligPage ellers forkert email eller password

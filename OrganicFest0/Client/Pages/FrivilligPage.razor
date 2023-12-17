@@ -18,7 +18,7 @@
 
     <div class="mb-3">
         <label for="afdelingsfilter" class="form-label">Vælg Afdeling:</label>
-        <select id="afdelingsfilter" @onchange="(e) => FilterByJobName(e)" class="form-select" style="width: 300px;">
+        <select id="afdelingsfilter" @onchange="(e) => FilterByAfdelingsNavn(e)" class="form-select" style="width: 300px;">
             <option value="">Sorter efter Afdelingsnavn</option>
             @foreach (var afdeling in afdelingsnavne)
             {
@@ -94,19 +94,23 @@
 
 
 @code {
-    // Deklaration og initialisering af en liste (container) af Vagt-objekter
+    // Objekt for alle vagter som referes til i venstre boks 
     private List<Vagt> vagtList = new List<Vagt>();
-    // Deklaration og initialisering af en liste (container) af Vagt-objekter
+
+    // Objekt for alle vagter som referes til i  højre boks
     private List<Vagt> mineVagter = new List<Vagt>();
-    // Objekt, der repræsenterer den aktuelle bruger
+
+    // Objekt som gør at bruger er husket når loggede ind
     private Bruger bruger;
+
     // Style for fejlmeddelse når en vagt Overlapper
     private string errorMessage;
-    // Deklaration og initialisering af en liste (container) af Afdeling-objekter
+
+    // Objekt for alle afdelinger som kan filter i afdelingsnavne - Se FilterByAfdelingsNavn
     private List<Afdeling> afdelingsnavne = new ();
 
-    // Sikre at brugeren er logget ind ellers bliver man sendt tilbage til LoginPage
-    // gør at listerne bliver sorteret efter priority og Start Dato
+    // Sender alle vagter ud på siden når man åbner den, og sikre at bruger er logget ind
+    // Sortere MineVagter ud fra StartDate og sortere vagtList udfra Priority
     protected override async Task OnInitializedAsync()
     {
         bruger = await localStore.GetItemAsync<Bruger>("loggedInUser");
@@ -123,8 +127,8 @@
         }
     }
 
-    // Gør at vagt for tilkoblet brugers FID, udfra hvem der er logget ind
-    // og sikre at du ikke tager flere vagter på samme dag, hvis ens giver errormessage
+    // Gør at vagt for tilkoblet brugers FID, udfra hvem der er logget får vagten - Se knap AddVagtToRightBox
+    // og sikre at du ikke tager vagter som overlapper ens egne ellers får man style ErrorMessage.
     private async Task AddVagtToRightBox(Vagt vagt)
     {
         var LoggedInUserVagter = (await VagtService.GetAllVagts()).Where(v => v.FID == bruger.FID).ToList();
@@ -148,9 +152,9 @@
         return LoggedInUserVagter.Any(v => v.Startdate <= newVagt.Enddate && v.Enddate >= newVagt.Startdate);
     }
 
-    // gør at man ved at vælge på DropdownMenuen "FilterByJobName"
+    // gør at man ved at vælge på DropdownMenuen "FilterByAfdelingsNavn"
     // kan vælge hvilken afdeling man kun vil se vagter
-    private async Task FilterByJobName(ChangeEventArgs e)
+    private async Task FilterByAfdelingsNavn(ChangeEventArgs e)
     {
         var x = e.Value.ToString();
         if (!string.IsNullOrEmpty(x))
@@ -168,7 +172,7 @@
         }
     }
 
-    // Når knappen fjern klikkes bliver vagt.Fid sat til at være 0 igen
+    // Gør at vagt får værdien FID = 0 når der klikkes på fjern.
     private async Task FjernVagtFromRightBox(Vagt vagt)
     {
         vagt.FID = 0;
