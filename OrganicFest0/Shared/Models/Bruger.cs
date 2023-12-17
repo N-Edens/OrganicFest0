@@ -6,9 +6,9 @@ namespace OrganicFest.Shared
 {
     public class Bruger
     {
-        [BsonId]  // Angiver at dette er ID-feltet i MongoDB
-        [BsonRepresentation(BsonType.ObjectId)]  // Angiver repræsentationen af ID'en i BSON-format
-        public string Id { get; set; } = string.Empty;  // Unik identifikator for string
+        [BsonId]  
+        [BsonRepresentation(BsonType.ObjectId)] 
+        public string Id { get; set; } = string.Empty;  
 
         public int FID { get; set; }
 
