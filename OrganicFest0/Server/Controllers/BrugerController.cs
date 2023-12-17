@@ -32,7 +32,7 @@ namespace OrganicFest.Server.Controllers
             bRepo.AddBruger(bruger);
         }
 
-        // Henter kaldeet til at slette en Bruger ud fra FID (Frivillig ID).
+        // Henter kaldet til at slette en Bruger ud fra FID (Frivillig ID).
         [HttpDelete]
         [Route("delete/{FID:int}")]
         public void DeleteBruger(int FID)

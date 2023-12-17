@@ -31,7 +31,7 @@ namespace OrganicFest.Server.Controllers
         {
             vRepo.AddVagt(vagt);
         }
-        // Henter kaldeet til at slette en Bruger ud fra VID (Vagt ID).
+        // Henter kaldet til at slette en Bruger ud fra VID (Vagt ID).
 
         [HttpDelete]
         [Route("delete/{VID:int}")]

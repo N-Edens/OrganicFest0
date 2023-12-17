@@ -76,7 +76,7 @@
     private List<Afdeling> afdelinger = new List<Afdeling>();
 
     // Gør at man skal være logget ind ellers bliver man sendt tilbage til LoginPage
-    // Og man skal være koordinator og henter alle afdelinger.
+    // Og man skal være koordinator.
     protected override async Task OnInitializedAsync()
     {
         var bruger = await localStore.GetItemAsync<Bruger>("loggedInUser");

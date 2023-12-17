@@ -105,7 +105,7 @@
     // Boolean for at vise om vagter tilgængelige via checkpoint
     bool VisTilgængeligeVagter = false;
 
-    //Style for hvad der vises i form af sotering - Se mere FilterOgSorterVagter
+    //Style for hvad der vises i form af soteringer - Se mere FilterOgSorterVagter
     string valgtSortering = "Afdelingsnavn";
 
     // Objekt for at filtrere og sortere vagter
@@ -114,7 +114,7 @@
     // Objekt for at kunne lave frivilligfilter
     private Bruger frivillig = new Bruger();
 
-    // Objekt For at kunne få alle afldelinger
+    // Objekt For at kunne få alle afdelinger
     private List<Afdeling> afdelinger = new List<Afdeling>();
 
     // Gør at når man går til siden sikres det at man er logget ind og viser liste over allevagter.
@@ -136,8 +136,8 @@
 
     }
 
-    //Gør at man kan filtere vagter sådan man kun se dem med FID værdi 0
-    // gør at man kan sortere vagterl
+    //Gør at man kan filtrere vagter sådan man kun se dem med FID værdi 0
+    // Gør at man kan sortere vagter udfra StartDate, Priority og Afdelingsnavn
     private List<Vagt> FilterOgSorterVagter()
     {
         List<Vagt> filtrerede;
@@ -178,7 +178,7 @@
         vagt = selectedVagt;
         visRedigeringsFormular = true;
     }
-    // gemmer ændringerne der er lavet i vagten.
+    // Gemmer ændringerne der er lavet i vagten.
     private async Task ChangeVagt()
     {
         visRedigeringsFormular = false;

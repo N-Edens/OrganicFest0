@@ -56,7 +56,7 @@ namespace OrganicFest.Server.Repository
             collection.InsertOne(bruger);
         }
 
-        // Fjerner bruger hvor bruger.FID = FID.
+        // Sletter bruger hvor bruger.FID = FID.
         public void DeleteBruger(int FID)
         {
             var deleteResult = collection

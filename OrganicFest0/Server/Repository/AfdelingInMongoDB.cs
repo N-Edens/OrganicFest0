@@ -30,9 +30,7 @@ namespace OrganicFest.Server.Repository
                 return;
             }
 
-            // Provide the name of the database and collection you want to use.
-            // If they don't already exist, the driver and Atlas will create them
-            // automatically when you first write data.
+
             var dbName = "OrganicFestival";
             var collectionName = "Afdeling";
 
